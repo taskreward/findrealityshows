@@ -63,3 +63,21 @@
 
 </body>
 </html>
+
+<script>
+    function openYouTube() {
+        var videoId = "nKbuXU29PjM"; // Replace with your actual video ID
+
+        // Open YouTube App or browser
+        var youtubeAppLink = "vnd.youtube://watch?v=" + videoId;
+        var youtubeWebLink = "https://www.youtube.com/watch?v=" + videoId;
+
+        // Try opening the YouTube App first
+        window.location.href = youtubeAppLink;
+
+        // Delay showing the content to simulate watching
+        setTimeout(function() {
+            document.getElementById("lockedContent").style.display = "block";
+        }, 5000); // Adjust this delay as needed
+    }
+</script>
