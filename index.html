@@ -1,75 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Watch to Unlock Content</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-    }
-    .locker-container {
-      border: 1px solid #ccc;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-    }
-    #unlockButton {
-      display: none;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #0284C7;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locked Content</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 18px;
+            color: white;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        #lockedContent {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <div class="locker-container">
+
     <h2>Locked Content</h2>
-    <p>Please watch the video below to unlock the content.</p>
-    <!-- YouTube video embed -->
-    <div id="player"></div>
-    <button id="unlockButton">Unlock Content</button>
-  </div>
-  
-  <!-- Load the YouTube IFrame API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script>
-    let player;
-    let videoFinished = false;
+    <p>Watch the video and follow to get unlocked.</p>
 
-    // Create the YouTube player after the API code downloads.
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        height: '240',
-        width: '320',
-        videoId: 'nKbuXU29PjM', // Replace with your YouTube video ID
-        events: {
-          'onStateChange': onPlayerStateChange
+    <!-- YouTube Watch Button -->
+    <a href="#" class="button" onclick="openYouTube()">Watch the video and follow to get unlocked</a>
+
+    <!-- Unlocked Content (Hidden by Default) -->
+    <div id="lockedContent">
+        <h3>Congratulations! You've unlocked the content.</h3>
+        <p>This is your special content after watching the video.</p>
+    </div>
+
+    <script>
+        function openYouTube() {
+            // Replace with your actual video ID
+            var videoId = "nKbuXU29PjM";
+
+            // Try opening in YouTube App first
+            var youtubeAppLink = "vnd.youtube://watch?v=" + videoId;
+            window.location.href = youtubeAppLink;
+
+            // Store watched status
+            sessionStorage.setItem('watched', 'true');
+
+            // Fallback to YouTube browser link (for desktop users)
+            setTimeout(function() {
+                window.location.href = "https://www.youtube.com/watch?v=" + videoId;
+            }, 500);
         }
-      });
-    }
 
-    // Detect when the video has finished playing.
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.ENDED) {
-        videoFinished = true;
-        document.getElementById('unlockButton').style.display = 'inline-block';
-      }
-    }
+        // Check if the user has watched the video and returned
+        window.onload = function() {
+            if (sessionStorage.getItem('watched') === 'true') {
+                document.getElementById('lockedContent').style.display = 'block';
+            }
+        };
+    </script>
 
-    // Redirect when the user clicks the unlock button.
-    document.getElementById('unlockButton').addEventListener('click', function() {
-      if (videoFinished) {
-        window.location.href = 'https://example.com/your-final-content'; // Change to your final content URL
-      } else {
-        alert('Please watch the video to the end.');
-      }
-    });
-  </script>
 </body>
 </html>
