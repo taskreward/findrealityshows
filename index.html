@@ -5,14 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Locked Content</title>
     <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
         .button {
             display: inline-block;
             padding: 10px 20px;
             font-size: 18px;
             color: white;
-            background-color: #007bff;
+            background-color: black;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
         }
         #lockedContent {
             display: none;
@@ -23,61 +32,43 @@
 <body>
 
     <h2>Locked Content</h2>
-    <p>Watch the video and follow to get unlocked.</p>
+    <p>Click the button, follow the channel, and watch the video for at least 15 seconds. Then return here to unlock the content.</p>
 
     <!-- YouTube Watch Button -->
     <a href="#" class="button" onclick="openYouTube()">Watch the video and follow to get unlocked</a>
 
     <!-- Unlocked Content (Hidden by Default) -->
     <div id="lockedContent">
-    <h3>Congratulations! You've unlocked the content.</h3>
-    <p>Click below to access your content:</p>
-    <a href="https://1024terabox.com/s/1d4XJo0M7rbrXvd6QpGE5Ow" class="button">Access Content</a>
+        <h3>Congratulations! You've unlocked the content.</h3>
+        <p>Click below to access your content:</p>
+        <a href="https://1024terabox.com/s/1d4XJo0M7rbrXvd6QpGE5Ow" class="button">Access Content</a>
     </div>
 
     <script>
         function openYouTube() {
-            // Replace with your actual video ID
-            var videoId = "nKbuXU29PjM";
-
-            // Try opening in YouTube App first
+            var videoId = "nKbuXU29PjM"; // Replace with your actual video ID
             var youtubeAppLink = "vnd.youtube://watch?v=" + videoId;
+            var youtubeWebLink = "https://www.youtube.com/watch?v=" + videoId;
+
+            // Try opening YouTube App first
             window.location.href = youtubeAppLink;
+            sessionStorage.setItem('watchedTime', Date.now());
 
-            // Store watched status
-            sessionStorage.setItem('watched', 'true');
-
-            // Fallback to YouTube browser link (for desktop users)
+            // Fallback to YouTube browser link
             setTimeout(function() {
-                window.location.href = "https://www.youtube.com/watch?v=" + videoId;
+                window.location.href = youtubeWebLink;
             }, 500);
         }
 
-        // Check if the user has watched the video and returned
         window.onload = function() {
-            if (sessionStorage.getItem('watched') === 'true') {
-                document.getElementById('lockedContent').style.display = 'block';
+            var watchedTime = sessionStorage.getItem('watchedTime');
+            if (watchedTime) {
+                var elapsedTime = (Date.now() - watchedTime) / 1000;
+                if (elapsedTime >= 15) {
+                    document.getElementById('lockedContent').style.display = 'block';
+                }
             }
         };
     </script>
-
 </body>
 </html>
-
-<script>
-    function openYouTube() {
-        var videoId = "nKbuXU29PjM"; // Replace with your actual video ID
-
-        // Open YouTube App or browser
-        var youtubeAppLink = "vnd.youtube://watch?v=" + videoId;
-        var youtubeWebLink = "https://www.youtube.com/watch?v=" + videoId;
-
-        // Try opening the YouTube App first
-        window.location.href = youtubeAppLink;
-
-        // Delay showing the content to simulate watching
-        setTimeout(function() {
-            document.getElementById("lockedContent").style.display = "block";
-        }, 5000); // Adjust this delay as needed
-    }
-</script>
