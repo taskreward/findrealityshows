@@ -7,64 +7,29 @@
   <style>
     body {
       margin: 0;
+      padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f8;
-    }
-    .header {
-      background-color: #007bff;
-      color: white;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-    }
-    .menu-icon {
-      font-size: 24px;
-      cursor: pointer;
-      margin-right: 15px;
-    }
-    .title {
-      font-size: 20px;
-    }
-    .sidebar {
-      position: fixed;
-      top: 0; left: 0;
-      height: 100vh;
-      width: 0;
-      background-color: white;
-      overflow-x: hidden;
-      transition: 0.3s;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      padding-top: 60px;
-      z-index: 999;
-    }
-    .sidebar a {
-      padding: 12px 24px;
-      display: block;
-      color: #333;
-      text-decoration: none;
-      border-bottom: 1px solid #eee;
+      background-color: #f2f2f2;
     }
     .container {
+      max-width: 500px;
+      margin: auto;
       padding: 20px;
     }
     .wallet {
-      background-color: #fff;
+      background-color: #007bff;
+      color: white;
       padding: 15px;
       border-radius: 10px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       text-align: center;
     }
     .section {
-      background-color: #fff;
+      background-color: white;
       padding: 15px;
-      border-radius: 10px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    .section h3 {
-      margin-top: 0;
-      font-size: 18px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .task {
       display: flex;
@@ -73,7 +38,7 @@
       margin: 10px 0;
     }
     .btn {
-      padding: 5px 12px;
+      padding: 5px 10px;
       background-color: #28a745;
       color: white;
       border: none;
@@ -81,161 +46,80 @@
       cursor: pointer;
     }
     .btn[disabled] {
-      background-color: #ccc;
+      background-color: #888;
+      cursor: not-allowed;
     }
-    .live-feed {
-      background: #fff;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      font-size: 14px;
-      margin-bottom: 20px;
-      overflow: hidden;
-      height: 60px;
-      position: relative;
-    }
-    .live-feed div {
-      position: absolute;
-      width: 100%;
-      animation: scrollUp 10s linear infinite;
-    }
-    @keyframes scrollUp {
-      0% { top: 60px; }
-      100% { top: -100%; }
-    }
-    .popup-overlay {
+    #toast-container {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .popup-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
-    <div class="title">Reward Dashboard</div>
-  </div>
 
-  <div id="sidebar" class="sidebar">
-    <a href="#" onclick="openDashboard()">Dashboard</a>
-    <a href="#" onclick="openWithdrawPopup()">Withdrawal</a>
-    <a href="#" onclick="openReferralPopup()">Referral</a>
-    <a href="#" onclick="openSettingPopup()">Setting</a>
-    <a href="https://t.me/Supraa723" target="_blank">Support</a>
-  </div>
+<div id="app"></div>
+<div id="popupContainer"></div>
+<div id="toast-container"></div>
 
-  <div class="container">
-    <div class="wallet">
-      <strong>👋 Welcome, Priya</strong><br>
-      💰 Wallet: ₹<span id="wallet-balance">1280</span>
-    </div>
+<script>
+  // Toast live feed logic
+  const withdrawalNames = [
+    "Priya", "Rahul", "Ankita", "Ravi", "Suman", "Neha", "Amit", "Divya", "Karan", "Pooja",
+    "Sneha", "Manoj", "Ayesha", "Nikhil", "Tanya", "Abhishek", "Kriti", "Rohit", "Sonam", "Anjali",
+    "Harsh", "Shreya", "Vivek", "Isha", "Deepak", "Ritika", "Suraj", "Meena", "Nitin", "Simran",
+    "Kunal", "Bhavna", "Arjun", "Nisha", "Ramesh", "Priti", "Yash", "Lavanya", "Tarun", "Rekha",
+    "Saurabh", "Pallavi", "Ajay", "Diya", "Varun", "Swati", "Chirag", "Naina", "Raj", "Mansi"
+  ];
 
-    <div class="live-feed">
-      <div id="live-scroll">
-        <p>Priya withdrew ₹1000</p>
-        <p>Ravi withdrew ₹1200</p>
-        <p>Anjali withdrew ₹2500</p>
-        <p>Arjun withdrew ₹1400</p>
-        <p>Kavita withdrew ₹2000</p>
-        <p>Rahul withdrew ₹3000</p>
-      </div>
-    </div>
+  function getRandomName() {
+    return withdrawalNames[Math.floor(Math.random() * withdrawalNames.length)];
+  }
 
-    <div class="section">
-      <h3>📅 Daily Tasks</h3>
-      <!-- Loop to generate 6 daily tasks -->
-      <div class="task"><span>Task 1 - Watch video</span><button class="btn">₹12</button></div>
-      <div class="task"><span>Task 2 - Sign up</span><button class="btn">₹14</button></div>
-      <div class="task"><span>Task 3 - Install App</span><button class="btn">₹13</button></div>
-      <div class="task"><span>Task 4 - Survey</span><button class="btn">₹15</button></div>
-      <div class="task"><span>Task 5 - Like & Share</span><button class="btn">₹10</button></div>
-      <div class="task"><span>Task 6 - Mini quiz</span><button class="btn">₹11</button></div>
-    </div>
+  function getRandomAmount() {
+    const amounts = [1000, 1200, 1500, 1700, 1800, 2000, 2200, 2500, 2700, 3000];
+    return amounts[Math.floor(Math.random() * amounts.length)];
+  }
 
-    <div class="section">
-      <h3>📆 Weekly Tasks</h3>
-      <div class="task"><span>Task 1 - Full registration</span><button class="btn">₹15</button></div>
-      <div class="task"><span>Task 2 - Install + Survey</span><button class="btn">₹15</button></div>
-      <div class="task"><span>Task 3 - Feedback + Share</span><button class="btn">₹15</button></div>
-      <div class="task"><span>Task 4 - Refer friend</span><button class="btn">₹15</button></div>
-    </div>
-  </div>
+  function showToast(message) {
+    const toast = document.createElement("div");
+    toast.innerText = message;
+    toast.style.cssText = `
+      background-color: #343a40;
+      color: #fff;
+      padding: 12px 20px;
+      margin-top: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      animation: fadein 0.5s, fadeout 0.5s 4s;
+    `;
+    document.getElementById("toast-container").appendChild(toast);
+    setTimeout(() => toast.remove(), 4500);
+  }
 
-  <div id="popup"></div>
+  function startLiveWithdrawFeed() {
+    setInterval(() => {
+      const name = getRandomName();
+      const amount = getRandomAmount();
+      showToast(`${name} withdrew ₹${amount} successfully`);
+    }, 6000);
+  }
 
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
-    }
+  startLiveWithdrawFeed();
+</script>
 
-    function openDashboard() {
-      alert("Showing Dashboard");
-    }
+<style>
+@keyframes fadein {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+</style>
 
-    function openWithdrawPopup() {
-      const wallet = 1280;
-      const minAmount = 2000;
-      document.getElementById("popup").innerHTML = `
-        <div class="popup-overlay" onclick="closePopup(event)">
-          <div class="popup-content" onclick="event.stopPropagation()">
-            <h3>Withdraw Request</h3>
-            <p>Minimum ₹2000 required to withdraw. Your balance: ₹${wallet}</p>
-            <input placeholder="Bank Account Number" style="width: 100%; margin-bottom: 10px;" />
-            <input placeholder="IFSC Code" style="width: 100%; margin-bottom: 10px;" />
-            <input placeholder="Account Holder Name" style="width: 100%; margin-bottom: 10px;" />
-            <button class="btn" ${wallet < minAmount ? "disabled" : ""}>Request Withdrawal</button>
-            <p style="font-size: 12px; color: gray; margin-top: 10px;">Withdrawals are processed weekly.</p>
-          </div>
-        </div>`;
-    }
-
-    function openReferralPopup() {
-      const link = "https://yourapp.com/referral/priya123";
-      document.getElementById("popup").innerHTML = `
-        <div class="popup-overlay" onclick="closePopup(event)">
-          <div class="popup-content" onclick="event.stopPropagation()">
-            <h3>Referral Link</h3>
-            <p>Share and earn more!</p>
-            <input value="${link}" readonly style="width: 100%; margin-bottom: 10px;" />
-            <button class="btn" onclick="alert('Shared via WhatsApp')">WhatsApp</button>
-            <button class="btn" onclick="alert('Shared via Instagram')">Instagram</button>
-            <button class="btn" onclick="navigator.clipboard.writeText('${link}')">Copy Link</button>
-          </div>
-        </div>`;
-    }
-
-    function openSettingPopup() {
-      document.getElementById("popup").innerHTML = `
-        <div class="popup-overlay" onclick="closePopup(event)">
-          <div class="popup-content" onclick="event.stopPropagation()">
-            <h3>Settings</h3>
-            <p>Email: priya@example.com</p>
-            <button class="btn" onclick="logout()">Logout</button>
-          </div>
-        </div>`;
-    }
-
-    function closePopup(e) {
-      document.getElementById("popup").innerHTML = "";
-    }
-
-    function logout() {
-      alert("Logged out");
-      window.location.reload();
-    }
-  </script>
 </body>
 </html>
