@@ -82,20 +82,25 @@
     }
     .btn[disabled] {
       background-color: #ccc;
-      cursor: default;
     }
-    .live-feed {
+    .live-feed-toast {
       position: fixed;
       bottom: 20px;
       right: 20px;
       background: #333;
-      color: white;
-      padding: 10px 15px;
+      color: #fff;
+      padding: 10px 16px;
       border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       font-size: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      max-width: 300px;
-      z-index: 1000;
+      z-index: 1001;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+    }
+    .live-feed-toast.show {
+      opacity: 1;
+      transform: translateY(0);
     }
     .popup-overlay {
       position: fixed;
@@ -136,8 +141,6 @@
       💰 Wallet: ₹<span id="wallet-balance">1280</span>
     </div>
 
-    <div id="live-toast" class="live-feed" style="display: none;"></div>
-
     <div class="section">
       <h3>📅 Daily Tasks</h3>
       <div class="task"><span>Task 1 - Watch video</span><button class="btn">₹12</button></div>
@@ -158,77 +161,35 @@
   </div>
 
   <div id="popup"></div>
+  <div id="toast" class="live-feed-toast"></div>
 
   <script>
-    const names = ["Priya", "Ravi", "Anjali", "Arjun", "Kavita", "Rahul"];
-    let toastIndex = 0;
-
-    function showToast() {
-      const toast = document.getElementById("live-toast");
-      toast.textContent = `${names[toastIndex]} withdraws ₹100`;
-      toast.style.display = "block";
-      setTimeout(() => {
-        toast.style.display = "none";
-      }, 3000);
-      toastIndex = (toastIndex + 1) % names.length;
-    }
-
-    setTimeout(() => {
-      showToast();
-      setInterval(showToast, 5000);
-    }, 1000);
-
     function toggleSidebar() {
       const sidebar = document.getElementById("sidebar");
       sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
     }
 
     function openDashboard() {
-      window.location.href = window.location.origin + window.location.pathname;
+      window.location.href = window.location.href;
     }
 
     function openWithdrawPopup() {
-      const wallet = parseInt(document.getElementById("wallet-balance").textContent);
+      const wallet = parseInt(document.getElementById("wallet-balance").innerText);
       const minAmount = 2000;
-
-      const savedAccount = localStorage.getItem('accountNumber') || '';
-      const savedIFSC = localStorage.getItem('ifscCode') || '';
-      const savedHolder = localStorage.getItem('accountHolder') || '';
-
-      if (wallet < minAmount) {
-        return; // Do nothing if balance is below threshold
-      }
+      const disabled = wallet < minAmount;
 
       document.getElementById("popup").innerHTML = `
         <div class="popup-overlay" onclick="closePopup(event)">
           <div class="popup-content" onclick="event.stopPropagation()">
             <h3>Withdraw Request</h3>
-            <p>Your balance: ₹${wallet}</p>
-            <input id="accNum" placeholder="Bank Account Number" value="${savedAccount}" style="width: 100%; margin-bottom: 10px;" />
-            <input id="ifsc" placeholder="IFSC Code" value="${savedIFSC}" style="width: 100%; margin-bottom: 10px;" />
-            <input id="holder" placeholder="Account Holder Name" value="${savedHolder}" style="width: 100%; margin-bottom: 10px;" />
-            <button class="btn" onclick="submitWithdrawal()">Request Withdrawal</button>
-            <div style="margin-top: 15px; font-size: 14px; background: #f1f1f1; padding: 10px; border-radius: 6px;">
-              <strong>Withdrawal Instructions</strong><br/>
-              To unlock your withdrawal, please deposit ₹399.<br/>
-              <strong>UPI:</strong> <code>sahilzeerak123@okhdfcbank</code><br/>
-              Once payment is done, <a href="https://t.me/Supraa723" target="_blank">contact support</a> to confirm and release your reward.
-            </div>
+            <p>Minimum ₹2000 required to withdraw. Your balance: ₹${wallet}</p>
+            <input placeholder="Bank Account Number" style="width: 100%; margin-bottom: 10px;" />
+            <input placeholder="IFSC Code" style="width: 100%; margin-bottom: 10px;" />
+            <input placeholder="Account Holder Name" style="width: 100%; margin-bottom: 10px;" />
+            <button class="btn" ${disabled ? "disabled" : "onclick='alert(\"Withdraw request submitted!\")'"}>Request Withdrawal</button>
+            ${disabled ? "" : `<p style="font-size: 12px; color: gray; margin-top: 10px;">Withdrawals are processed weekly.</p>`}
           </div>
         </div>`;
-    }
-
-    function submitWithdrawal() {
-      const acc = document.getElementById("accNum").value;
-      const ifsc = document.getElementById("ifsc").value;
-      const holder = document.getElementById("holder").value;
-
-      localStorage.setItem('accountNumber', acc);
-      localStorage.setItem('ifscCode', ifsc);
-      localStorage.setItem('accountHolder', holder);
-
-      alert("Withdrawal request submitted!");
-      closePopup();
     }
 
     function openReferralPopup() {
@@ -238,12 +199,31 @@
           <div class="popup-content" onclick="event.stopPropagation()">
             <h3>Referral Link</h3>
             <p>Share and earn more!</p>
-            <input value="${link}" readonly style="width: 100%; margin-bottom: 10px;" />
-            <button class="btn" onclick="alert('Shared via WhatsApp')">WhatsApp</button>
-            <button class="btn" onclick="alert('Shared via Instagram')">Instagram</button>
-            <button class="btn" onclick="navigator.clipboard.writeText('${link}')">Copy Link</button>
+            <input id="referral-link" value="${link}" readonly style="width: 100%; margin-bottom: 10px;" />
+            <button class="btn" onclick="shareWhatsApp()">WhatsApp</button>
+            <button class="btn" onclick="shareInstagram()">Instagram</button>
+            <button class="btn" onclick="copyReferralLink()">Copy Link</button>
           </div>
         </div>`;
+    }
+
+    function shareWhatsApp() {
+      const link = document.getElementById("referral-link").value;
+      const message = `Join and earn rewards! Use my referral link: ${link}`;
+      const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareInstagram() {
+      window.open("https://www.instagram.com/", "_blank");
+    }
+
+    function copyReferralLink() {
+      const link = document.getElementById("referral-link");
+      link.select();
+      link.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("Referral link copied to clipboard!");
     }
 
     function openSettingPopup() {
@@ -265,6 +245,33 @@
       alert("Logged out");
       window.location.reload();
     }
+
+    // Toast Live Feed
+    const liveEvents = [
+      "Priya withdraws ₹1000",
+      "Ravi withdraws ₹1200",
+      "Anjali withdraws ₹2500",
+      "Arjun withdraws ₹1400",
+      "Kavita withdraws ₹2000",
+      "Rahul withdraws ₹3000"
+    ];
+    let toastIndex = 0;
+    const toastEl = document.getElementById("toast");
+
+    function showNextToast() {
+      toastEl.classList.remove("show");
+      setTimeout(() => {
+        toastEl.innerText = liveEvents[toastIndex];
+        toastEl.classList.add("show");
+        toastIndex = (toastIndex + 1) % liveEvents.length;
+      }, 200);
+    }
+
+    setInterval(() => {
+      showNextToast();
+    }, 5000);
+
+    showNextToast();
   </script>
 </body>
 </html>
