@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reward Dashboard</title>
   <style>
     body {
@@ -10,12 +10,15 @@
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f2f2f2;
+      overflow-x: hidden;
     }
+
     .container {
       max-width: 500px;
       margin: auto;
       padding: 20px;
     }
+
     .wallet {
       background-color: #007bff;
       color: white;
@@ -24,6 +27,7 @@
       margin-bottom: 20px;
       text-align: center;
     }
+
     .section {
       background-color: white;
       padding: 15px;
@@ -31,12 +35,14 @@
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+
     .task {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin: 10px 0;
     }
+
     .btn {
       padding: 5px 10px;
       background-color: #28a745;
@@ -45,81 +51,149 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
     .btn[disabled] {
       background-color: #888;
       cursor: not-allowed;
     }
-    #toast-container {
+
+    .toast-container {
       position: fixed;
       bottom: 20px;
       right: 20px;
       z-index: 9999;
     }
+
+    .toast {
+      background-color: white;
+      border-left: 5px solid #28a745;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+      font-size: 14px;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: translateX(100%); }
+    }
   </style>
 </head>
 <body>
 
-<div id="app"></div>
-<div id="popupContainer"></div>
-<div id="toast-container"></div>
+<div class="container">
+  <div class="wallet">
+    👋 Welcome, <strong id="usernameDisplay">User</strong><br>
+    💰 Wallet: ₹<span id="walletAmount">0</span><br>
+    <p style="font-size:13px; margin-top:5px;">You have tasks remaining today. Complete to earn more!</p>
+  </div>
+
+  <div class="section">
+    <h3>📅 Daily Missions (₹10-15 each)</h3>
+    <div id="dailyTasks"></div>
+  </div>
+
+  <div class="section">
+    <h3>📆 Weekly Missions (₹15 each)</h3>
+    <div id="weeklyTasks"></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
-  // Toast live feed logic
-  const withdrawalNames = [
-    "Priya", "Rahul", "Ankita", "Ravi", "Suman", "Neha", "Amit", "Divya", "Karan", "Pooja",
-    "Sneha", "Manoj", "Ayesha", "Nikhil", "Tanya", "Abhishek", "Kriti", "Rohit", "Sonam", "Anjali",
-    "Harsh", "Shreya", "Vivek", "Isha", "Deepak", "Ritika", "Suraj", "Meena", "Nitin", "Simran",
-    "Kunal", "Bhavna", "Arjun", "Nisha", "Ramesh", "Priti", "Yash", "Lavanya", "Tarun", "Rekha",
-    "Saurabh", "Pallavi", "Ajay", "Diya", "Varun", "Swati", "Chirag", "Naina", "Raj", "Mansi"
+  const dailyTaskCount = 6;
+  const weeklyTaskCount = 4;
+  const user = localStorage.getItem("current_user") || "guest";
+  const walletKey = `wallet_${user}`;
+  const logKey = `taskLog_${user}`;
+  const completed = JSON.parse(localStorage.getItem(logKey) || "[]");
+
+  const usernameDisplay = document.getElementById("usernameDisplay");
+  const walletAmount = document.getElementById("walletAmount");
+  const dailyTasks = document.getElementById("dailyTasks");
+  const weeklyTasks = document.getElementById("weeklyTasks");
+
+  usernameDisplay.innerText = user;
+  walletAmount.innerText = localStorage.getItem(walletKey) || 0;
+
+  function getRandomReward() {
+    return Math.floor(Math.random() * 6) + 10; // ₹10 - ₹15
+  }
+
+  function renderTasks(container, type, count, fixed = false) {
+    for (let i = 1; i <= count; i++) {
+      const id = `${type}_task${i}`;
+      const amount = fixed ? 15 : getRandomReward();
+      const isDone = completed.includes(id);
+
+      const taskDiv = document.createElement("div");
+      taskDiv.className = "task";
+      taskDiv.innerHTML = `
+        <div>
+          ${type === 'daily' ? '✅' : '📝'} Task ${i}<br>
+          <div class="instructions">Complete the offer (2.5 mins).</div>
+        </div>
+        <button class="btn" onclick="completeTask('${id}', ${amount})" ${isDone ? 'disabled' : ''}>₹${amount}</button>
+      `;
+
+      container.appendChild(taskDiv);
+    }
+  }
+
+  function completeTask(taskId, amount) {
+    if (completed.includes(taskId)) return;
+    completed.push(taskId);
+    localStorage.setItem(logKey, JSON.stringify(completed));
+    const current = parseInt(localStorage.getItem(walletKey) || 0);
+    localStorage.setItem(walletKey, current + amount);
+    walletAmount.innerText = current + amount;
+    window.location.reload();
+  }
+
+  renderTasks(dailyTasks, 'daily', dailyTaskCount);
+  renderTasks(weeklyTasks, 'weekly', weeklyTaskCount, true);
+
+  // Toast Live Feed
+  const toastContainer = document.getElementById("toastContainer");
+  const names = [
+    "Priya", "Rohan", "Neha", "Aman", "Sakshi", "Ankit", "Pooja", "Rahul", "Kiran", "Siddharth",
+    "Swati", "Manish", "Divya", "Vikram", "Aarti", "Nikhil", "Isha", "Harsh", "Meena", "Kunal",
+    "Deepika", "Raj", "Sneha", "Yash", "Shreya", "Aditya", "Pankaj", "Reena", "Ashish", "Sonam",
+    "Ajay", "Ritu", "Ravi", "Anjali", "Karan", "Sheetal", "Mohit", "Simran", "Gaurav", "Tanya",
+    "Abhishek", "Preeti", "Lakshay", "Tanvi", "Dev", "Muskan", "Irfan", "Komal", "Parth", "Chirag"
   ];
 
-  function getRandomName() {
-    return withdrawalNames[Math.floor(Math.random() * withdrawalNames.length)];
-  }
-
-  function getRandomAmount() {
-    const amounts = [1000, 1200, 1500, 1700, 1800, 2000, 2200, 2500, 2700, 3000];
-    return amounts[Math.floor(Math.random() * amounts.length)];
-  }
-
-  function showToast(message) {
+  function showToast(name, amount) {
     const toast = document.createElement("div");
-    toast.innerText = message;
-    toast.style.cssText = `
-      background-color: #343a40;
-      color: #fff;
-      padding: 12px 20px;
-      margin-top: 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      animation: fadein 0.5s, fadeout 0.5s 4s;
-    `;
-    document.getElementById("toast-container").appendChild(toast);
-    setTimeout(() => toast.remove(), 4500);
+    toast.className = "toast";
+    toast.innerText = `${name} just withdrew ₹${amount}`;
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
   }
 
-  function startLiveWithdrawFeed() {
+  function loopToasts() {
+    let used = [];
     setInterval(() => {
-      const name = getRandomName();
-      const amount = getRandomAmount();
-      showToast(`${name} withdrew ₹${amount} successfully`);
+      let name;
+      do {
+        name = names[Math.floor(Math.random() * names.length)];
+      } while (used.includes(name));
+      used.push(name);
+      if (used.length > 10) used.shift();
+      const amount = Math.floor(Math.random() * 2000) + 1000;
+      showToast(name, amount);
     }, 6000);
   }
 
-  startLiveWithdrawFeed();
+  loopToasts();
 </script>
-
-<style>
-@keyframes fadein {
-  from {opacity: 0; transform: translateY(20px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-@keyframes fadeout {
-  from {opacity: 1;}
-  to {opacity: 0;}
-}
-</style>
 
 </body>
 </html>
