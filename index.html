@@ -83,27 +83,23 @@
     .btn[disabled] {
       background-color: #ccc;
     }
-
-    /* Toast-style live feed */
-    .live-feed-toast {
+    .live-toast {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background-color: #2d2d2d;
+      background-color: #333;
       color: white;
-      padding: 12px 18px;
+      padding: 12px 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.4s ease;
       z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
     }
-
-    .live-feed-toast.show {
+    .live-toast.show {
       opacity: 1;
     }
-
     .popup-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -143,9 +139,6 @@
       💰 Wallet: ₹<span id="wallet-balance">1280</span>
     </div>
 
-    <!-- Toast container -->
-    <div id="toast" class="live-feed-toast"></div>
-
     <div class="section">
       <h3>📅 Daily Tasks</h3>
       <div class="task"><span>Task 1 - Watch video</span><button class="btn">₹12</button></div>
@@ -166,6 +159,7 @@
   </div>
 
   <div id="popup"></div>
+  <div id="toast" class="live-toast"></div>
 
   <script>
     function toggleSidebar() {
@@ -174,7 +168,7 @@
     }
 
     function openDashboard() {
-      alert("Showing Dashboard");
+      window.location.href = window.location.origin + window.location.pathname;
     }
 
     function openWithdrawPopup() {
@@ -229,35 +223,28 @@
       window.location.reload();
     }
 
-    // Live feed toast logic
-    const withdrawals = [
-      "Priya withdraws ₹1000",
-      "Ravi withdraws ₹1200",
-      "Anjali withdraws ₹2500",
-      "Arjun withdraws ₹1400",
-      "Kavita withdraws ₹2000",
-      "Rahul withdraws ₹3000"
+    // Toast Live Feed Logic
+    const users = [
+      "Priya", "Ravi", "Anjali", "Arjun", "Kavita", "Rahul", "Meena", "Rohan", "Nisha"
     ];
-
-    let current = 0;
     const toast = document.getElementById("toast");
 
     function showToast(message) {
-      toast.innerText = message;
+      toast.textContent = message;
       toast.classList.add("show");
       setTimeout(() => {
         toast.classList.remove("show");
-      }, 3000); // Show for 3s
+      }, 3000); // show for 3 seconds
     }
 
-    function runToastLoop() {
-      showToast(withdrawals[current]);
-      current = (current + 1) % withdrawals.length;
-      setTimeout(runToastLoop, 8000); // Wait 8s: 3s show + 5s pause
-    }
+    let i = 0;
+    setInterval(() => {
+      const user = users[i % users.length];
+      const amount = 100 + Math.floor(Math.random() * 20) * 100;
+      showToast(`${user} withdraws ₹${amount}`);
+      i++;
+    }, 5000); // show new one every 5 seconds
 
-    // Start loop
-    runToastLoop();
   </script>
 </body>
 </html>
