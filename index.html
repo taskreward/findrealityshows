@@ -84,28 +84,24 @@
       background-color: #ccc;
     }
 
-    /* Toast-style live feed - bottom right with neutral dark style */
-    .live-feed {
+    /* Toast-style live feed */
+    .live-feed-toast {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      z-index: 1001;
-    }
-    .toast {
-      background-color: #333;
+      background-color: #2d2d2d;
       color: white;
-      padding: 10px 15px;
+      padding: 12px 18px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      margin-top: 10px;
-      animation: fadeInOut 4s ease-in-out forwards;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 14px;
       opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1000;
     }
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translateY(10px); }
-      10% { opacity: 1; transform: translateY(0); }
-      90% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-10px); }
+
+    .live-feed-toast.show {
+      opacity: 1;
     }
 
     .popup-overlay {
@@ -147,8 +143,8 @@
       💰 Wallet: ₹<span id="wallet-balance">1280</span>
     </div>
 
-    <!-- Toast-style Live Feed -->
-    <div class="live-feed" id="toast-container"></div>
+    <!-- Toast container -->
+    <div id="toast" class="live-feed-toast"></div>
 
     <div class="section">
       <h3>📅 Daily Tasks</h3>
@@ -233,32 +229,35 @@
       window.location.reload();
     }
 
-    // Toast-style live feed JS
+    // Live feed toast logic
     const withdrawals = [
-      "Priya withdrew ₹1000",
-      "Ravi withdrew ₹1200",
-      "Anjali withdrew ₹2500",
-      "Arjun withdrew ₹1400",
-      "Kavita withdrew ₹2000",
-      "Rahul withdrew ₹3000"
+      "Priya withdraws ₹1000",
+      "Ravi withdraws ₹1200",
+      "Anjali withdraws ₹2500",
+      "Arjun withdraws ₹1400",
+      "Kavita withdraws ₹2000",
+      "Rahul withdraws ₹3000"
     ];
-    let toastIndex = 0;
 
-    function showNextToast() {
-      const container = document.getElementById("toast-container");
-      const toast = document.createElement("div");
-      toast.className = "toast";
-      toast.innerText = withdrawals[toastIndex];
-      container.appendChild(toast);
+    let current = 0;
+    const toast = document.getElementById("toast");
 
+    function showToast(message) {
+      toast.innerText = message;
+      toast.classList.add("show");
       setTimeout(() => {
-        container.removeChild(toast);
-      }, 4000);
-
-      toastIndex = (toastIndex + 1) % withdrawals.length;
+        toast.classList.remove("show");
+      }, 3000); // Show for 3s
     }
 
-    setInterval(showNextToast, 5000);
+    function runToastLoop() {
+      showToast(withdrawals[current]);
+      current = (current + 1) % withdrawals.length;
+      setTimeout(runToastLoop, 8000); // Wait 8s: 3s show + 5s pause
+    }
+
+    // Start loop
+    runToastLoop();
   </script>
 </body>
 </html>
