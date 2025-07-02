@@ -2,105 +2,130 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reward Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f8;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #1f2937;
     }
     .header {
-      background-color: #007bff;
+      background: linear-gradient(90deg, #6366f1, #3b82f6);
       color: white;
-      padding: 15px;
+      padding: 16px 24px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 600;
     }
     .menu-icon {
       font-size: 24px;
       cursor: pointer;
-      margin-right: 15px;
-    }
-    .title {
-      font-size: 20px;
     }
     .sidebar {
       position: fixed;
       top: 0; left: 0;
       height: 100vh;
       width: 0;
-      background-color: white;
+      background: #fff;
       overflow-x: hidden;
       transition: 0.3s;
       box-shadow: 2px 0 10px rgba(0,0,0,0.1);
       padding-top: 60px;
-      z-index: 999;
+      z-index: 1000;
     }
     .sidebar a {
-      padding: 12px 24px;
+      padding: 16px 24px;
       display: block;
-      color: #333;
+      color: #111827;
+      font-weight: 500;
       text-decoration: none;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #e5e7eb;
     }
     .container {
-      padding: 20px;
+      padding: 24px;
+      max-width: 700px;
+      margin: auto;
     }
     .wallet {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       text-align: center;
+      font-size: 16px;
+    }
+    .wallet strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
     }
     .section {
       background-color: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
     .section h3 {
-      margin-top: 0;
       font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
     }
     .task {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 10px 0;
+      padding: 10px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .task:last-child {
+      border-bottom: none;
     }
     .btn {
-      padding: 5px 12px;
-      background-color: #28a745;
-      color: white;
+      background-color: #10b981;
       border: none;
-      border-radius: 5px;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 14px;
       cursor: pointer;
     }
     .btn[disabled] {
-      background-color: #ccc;
+      background-color: #9ca3af;
+      cursor: not-allowed;
     }
-    .live-feed-toast {
+    .live-toast {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: #333;
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      background: #111827;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
       font-size: 14px;
-      z-index: 1001;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.4s ease;
+      animation: fadeInOut 10s ease-in-out infinite;
     }
-    .live-feed-toast.show {
-      opacity: 1;
-      transform: translateY(0);
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      50% { opacity: 1; }
+      60% { opacity: 0; }
+      100% { opacity: 0; }
     }
     .popup-overlay {
       position: fixed;
@@ -114,8 +139,8 @@
     }
     .popup-content {
       background: #fff;
-      padding: 20px;
-      border-radius: 10px;
+      padding: 24px;
+      border-radius: 12px;
       width: 90%;
       max-width: 400px;
     }
@@ -137,7 +162,7 @@
 
   <div class="container">
     <div class="wallet">
-      <strong>👋 Welcome, Priya</strong><br>
+      <strong>👋 Welcome, Priya</strong>
       💰 Wallet: ₹<span id="wallet-balance">1280</span>
     </div>
 
@@ -160,34 +185,63 @@
     </div>
   </div>
 
+  <div id="live-toast" class="live-toast"></div>
   <div id="popup"></div>
-  <div id="toast" class="live-feed-toast"></div>
 
   <script>
+    const messages = [
+      'Priya withdraws ₹1000',
+      'Ravi withdraws ₹1200',
+      'Anjali withdraws ₹2500',
+      'Arjun withdraws ₹1400',
+      'Kavita withdraws ₹2000',
+      'Rahul withdraws ₹3000'
+    ];
+    let index = 0;
+    const toast = document.getElementById('live-toast');
+
+    function showNextMessage() {
+      toast.textContent = messages[index];
+      toast.style.animation = 'none';
+      void toast.offsetWidth;
+      toast.style.animation = 'fadeInOut 10s ease-in-out';
+      index = (index + 1) % messages.length;
+    }
+    setInterval(showNextMessage, 5000);
+    showNextMessage();
+
     function toggleSidebar() {
       const sidebar = document.getElementById("sidebar");
       sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
     }
 
     function openDashboard() {
-      window.location.href = window.location.href;
+      window.location.href = "index.html"; // Replace with real landing URL
     }
 
     function openWithdrawPopup() {
-      const wallet = parseInt(document.getElementById("wallet-balance").innerText);
+      const wallet = parseInt(document.getElementById("wallet-balance").textContent);
       const minAmount = 2000;
-      const disabled = wallet < minAmount;
+      let content = "";
+
+      if (wallet < minAmount) {
+        content = `<p>Minimum ₹${minAmount} required to withdraw. Your balance: ₹${wallet}</p>`;
+      } else {
+        content = `
+          <p>Enter withdrawal details</p>
+          <input placeholder="Bank Account Number" style="width: 100%; margin-bottom: 10px;" />
+          <input placeholder="IFSC Code" style="width: 100%; margin-bottom: 10px;" />
+          <input placeholder="Account Holder Name" style="width: 100%; margin-bottom: 10px;" />
+          <button class="btn">Request Withdrawal</button>
+          <p style="font-size: 12px; color: gray; margin-top: 10px;">Withdrawals are processed weekly.</p>
+        `;
+      }
 
       document.getElementById("popup").innerHTML = `
         <div class="popup-overlay" onclick="closePopup(event)">
           <div class="popup-content" onclick="event.stopPropagation()">
             <h3>Withdraw Request</h3>
-            <p>Minimum ₹2000 required to withdraw. Your balance: ₹${wallet}</p>
-            <input placeholder="Bank Account Number" style="width: 100%; margin-bottom: 10px;" />
-            <input placeholder="IFSC Code" style="width: 100%; margin-bottom: 10px;" />
-            <input placeholder="Account Holder Name" style="width: 100%; margin-bottom: 10px;" />
-            <button class="btn" ${disabled ? "disabled" : "onclick='alert(\"Withdraw request submitted!\")'"}>Request Withdrawal</button>
-            ${disabled ? "" : `<p style="font-size: 12px; color: gray; margin-top: 10px;">Withdrawals are processed weekly.</p>`}
+            ${content}
           </div>
         </div>`;
     }
@@ -199,31 +253,12 @@
           <div class="popup-content" onclick="event.stopPropagation()">
             <h3>Referral Link</h3>
             <p>Share and earn more!</p>
-            <input id="referral-link" value="${link}" readonly style="width: 100%; margin-bottom: 10px;" />
-            <button class="btn" onclick="shareWhatsApp()">WhatsApp</button>
-            <button class="btn" onclick="shareInstagram()">Instagram</button>
-            <button class="btn" onclick="copyReferralLink()">Copy Link</button>
+            <input value="${link}" readonly style="width: 100%; margin-bottom: 10px;" />
+            <button class="btn" onclick="window.open('https://wa.me/?text=' + encodeURIComponent('${link}'), '_blank')">WhatsApp</button>
+            <button class="btn" onclick="window.open('https://www.instagram.com/', '_blank')">Instagram</button>
+            <button class="btn" onclick="navigator.clipboard.writeText('${link}')">Copy Link</button>
           </div>
         </div>`;
-    }
-
-    function shareWhatsApp() {
-      const link = document.getElementById("referral-link").value;
-      const message = `Join and earn rewards! Use my referral link: ${link}`;
-      const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    }
-
-    function shareInstagram() {
-      window.open("https://www.instagram.com/", "_blank");
-    }
-
-    function copyReferralLink() {
-      const link = document.getElementById("referral-link");
-      link.select();
-      link.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      alert("Referral link copied to clipboard!");
     }
 
     function openSettingPopup() {
@@ -245,33 +280,6 @@
       alert("Logged out");
       window.location.reload();
     }
-
-    // Toast Live Feed
-    const liveEvents = [
-      "Priya withdraws ₹1000",
-      "Ravi withdraws ₹1200",
-      "Anjali withdraws ₹2500",
-      "Arjun withdraws ₹1400",
-      "Kavita withdraws ₹2000",
-      "Rahul withdraws ₹3000"
-    ];
-    let toastIndex = 0;
-    const toastEl = document.getElementById("toast");
-
-    function showNextToast() {
-      toastEl.classList.remove("show");
-      setTimeout(() => {
-        toastEl.innerText = liveEvents[toastIndex];
-        toastEl.classList.add("show");
-        toastIndex = (toastIndex + 1) % liveEvents.length;
-      }, 200);
-    }
-
-    setInterval(() => {
-      showNextToast();
-    }, 5000);
-
-    showNextToast();
   </script>
 </body>
 </html>
