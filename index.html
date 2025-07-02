@@ -84,26 +84,28 @@
       background-color: #ccc;
     }
 
-    /* ✅ NEW LIVE FEED STYLES */
+    /* Toast-style live feed */
     .live-feed {
-      height: auto;
-      background: #fff;
-      overflow: hidden;
-      padding: 10px 0;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      border-radius: 10px;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 1001;
     }
-    #ticker {
-      white-space: nowrap;
-      display: inline-block;
-      animation: ticker 40s linear infinite;
-      font-size: 14px;
-      padding-left: 100%;
+    .toast {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+      animation: fadeInOut 4s ease-in-out forwards;
+      opacity: 0;
     }
-    @keyframes ticker {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-100%); }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(10px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-10px); }
     }
 
     .popup-overlay {
@@ -145,10 +147,8 @@
       💰 Wallet: ₹<span id="wallet-balance">1280</span>
     </div>
 
-    <!-- ✅ NEW LIVE FEED SECTION -->
-    <div class="live-feed">
-      <div id="ticker"></div>
-    </div>
+    <!-- Updated Live Feed (toast style) -->
+    <div class="live-feed" id="toast-container"></div>
 
     <div class="section">
       <h3>📅 Daily Tasks</h3>
@@ -233,26 +233,32 @@
       window.location.reload();
     }
 
-    // ✅ LIVE TICKER SCRIPT
-    const names = [
-      "Priya", "Ravi", "Anjali", "Arjun", "Kavita", "Rahul", "Neha", "Vikram", "Simran", "Rakesh",
-      "Divya", "Amit", "Sneha", "Karan", "Meena", "Suresh", "Isha", "Raj", "Nikita", "Pooja",
-      "Ankit", "Swati", "Tanya", "Vivek", "Sonam", "Deepak", "Reena", "Nikhil", "Shreya", "Gaurav",
-      "Pritam", "Tanvi", "Lalit", "Anuja", "Yash", "Irfan", "Komal", "Varun", "Shivani", "Ashok",
-      "Zoya", "Farhan", "Preeti", "Harsh", "Avni", "Rohit", "Muskan", "Sanjay", "Payal", "Jatin"
+    // Toast-style live feed JS
+    const withdrawals = [
+      "Priya withdrew ₹1000",
+      "Ravi withdrew ₹1200",
+      "Anjali withdrew ₹2500",
+      "Arjun withdrew ₹1400",
+      "Kavita withdrew ₹2000",
+      "Rahul withdrew ₹3000"
     ];
+    let toastIndex = 0;
 
-    function generateTickerFeed() {
-      const feed = [];
-      for (let i = 0; i < 30; i++) {
-        const name = names[Math.floor(Math.random() * names.length)];
-        const amount = Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000;
-        feed.push(`${name} withdrew ₹${amount}`);
-      }
-      return feed.join(" • ");
+    function showNextToast() {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.innerText = withdrawals[toastIndex];
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        container.removeChild(toast);
+      }, 4000);
+
+      toastIndex = (toastIndex + 1) % withdrawals.length;
     }
 
-    document.getElementById("ticker").textContent = generateTickerFeed();
+    setInterval(showNextToast, 5000);
   </script>
 </body>
 </html>
