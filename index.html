@@ -3,156 +3,182 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reward Dashboard (70₹ Test)</title>
+  <title>Reward Dashboard</title>
   <style>
-    body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f2f2f2; }
-    .container { max-width: 500px; margin: auto; padding: 20px; }
-    .wallet { background-color: #007bff; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
-    .section { background-color: white; padding: 15px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .task { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
-    .btn { padding: 5px 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .btn[disabled] { background-color: #888; cursor: not-allowed; }
-    .login-form { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .instructions { font-size: 14px; color: #555; margin-top: 5px; }
-    .popup { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-    .popup-content { background: white; padding: 25px; border-radius: 10px; max-width: 90%; text-align: center; }
-    .popup-content p { margin-bottom: 10px; font-size: 15px; }
-    .bank-input { width: 100%; padding: 8px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 5px; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+    .wallet {
+      background-color: #007bff;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .section {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .btn {
+      padding: 5px 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn[disabled] {
+      background-color: #888;
+      cursor: not-allowed;
+    }
+    .menu-icon {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      background: #333;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 999;
+    }
+    .menu-popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 998;
+    }
+    .menu-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .menu-content button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
+  <div class="menu-icon" onclick="showMenu()">☰</div>
+  <div id="menuPopup"></div>
+  <div id="app"></div>
 
-<div id="app"></div>
-<div id="popupContainer"></div>
+  <script>
+    const app = document.getElementById("app");
+    const menuPopup = document.getElementById("menuPopup");
 
-<script>
-  const app = document.getElementById("app");
-  const popupContainer = document.getElementById("popupContainer");
-  const TASK_AMOUNT = 15;
-  const WITHDRAW_LIMIT = 70;
-
-  function renderLogin() {
-    app.innerHTML = `
-      <div class="login-form">
-        <h2>Login or Register</h2>
-        <input type="text" id="username" placeholder="Username" style="width: 100%; padding: 10px; margin-bottom: 10px;" />
-        <input type="password" id="password" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 10px;" />
-        <button class="btn" style="width: 100%;" onclick="login()">Enter</button>
-      </div>
-    `;
-  }
-
-  function login() {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!username || !password) return alert("Please enter both fields");
-
-    const savedPass = localStorage.getItem(`pass_${username}`);
-    if (savedPass && savedPass !== password) return alert("Wrong password");
-
-    localStorage.setItem(`pass_${username}`, password);
-    localStorage.setItem("current_user", username);
-    if (!localStorage.getItem(`wallet_${username}`)) localStorage.setItem(`wallet_${username}`, 0);
-    if (!localStorage.getItem(`taskLog_${username}`)) localStorage.setItem(`taskLog_${username}`, JSON.stringify([]));
-    renderDashboard(username);
-  }
-
-  function addBalance(taskId) {
-    const user = localStorage.getItem("current_user");
-    const logKey = `taskLog_${user}`;
-    const completedTasks = JSON.parse(localStorage.getItem(logKey) || "[]");
-
-    if (completedTasks.includes(taskId)) return alert("You have already completed this task today.");
-    completedTasks.push(taskId);
-    localStorage.setItem(logKey, JSON.stringify(completedTasks));
-
-    const walletKey = `wallet_${user}`;
-    const current = parseInt(localStorage.getItem(walletKey) || 0);
-    localStorage.setItem(walletKey, current + TASK_AMOUNT);
-    renderDashboard(user);
-  }
-
-  function showWithdrawPopup() {
-    const user = localStorage.getItem("current_user");
-    const name = localStorage.getItem(`bank_name_${user}`) || "";
-    const acc = localStorage.getItem(`bank_acc_${user}`) || "";
-    const ifsc = localStorage.getItem(`bank_ifsc_${user}`) || "";
-
-    popupContainer.innerHTML = `
-      <div class="popup">
-        <div class="popup-content">
-          <h3>Withdrawal Instructions</h3>
-          <p>To unlock your withdrawal, please deposit ₹399.</p>
-          <p>Use the following UPI ID to pay:</p>
-          <strong style="font-size: 16px;">sahilzeerak123@okhdfcbank</strong>
-          <p>Once payment is done, contact support to confirm and release your reward.</p>
-          <h4 style="margin-top: 15px;">Your Bank Details:</h4>
-          <input class="bank-input" placeholder="Your Name" value="${name}" onchange="saveBank('name', this.value)" />
-          <input class="bank-input" placeholder="Account Number" value="${acc}" onchange="saveBank('acc', this.value)" />
-          <input class="bank-input" placeholder="IFSC Code" value="${ifsc}" onchange="saveBank('ifsc', this.value)" />
-          <button class="btn" onclick="closePopup()">OK</button>
-        </div>
-      </div>
-    `;
-  }
-
-  function saveBank(field, value) {
-    const user = localStorage.getItem("current_user");
-    localStorage.setItem(`bank_${field}_${user}`, value);
-  }
-
-  function closePopup() {
-    popupContainer.innerHTML = "";
-  }
-
-  function withdrawRequest() {
-    const user = localStorage.getItem("current_user");
-    const amount = parseInt(localStorage.getItem(`wallet_${user}`) || 0);
-
-    if (amount < WITHDRAW_LIMIT) {
-      alert(`You need ₹${WITHDRAW_LIMIT} in wallet to unlock withdrawal.`);
-      return;
+    function showMenu() {
+      menuPopup.innerHTML = `
+        <div class="menu-popup" onclick="closeMenu(event)">
+          <div class="menu-content" onclick="event.stopPropagation()">
+            <button onclick="goToDashboard()">Dashboard</button>
+            <button onclick="openWithdrawPopup()">Withdraw</button>
+            <button onclick="openReferral()">Referral</button>
+            <button onclick="openSettings()">Settings</button>
+            <button onclick="openSupport()">Support</button>
+          </div>
+        </div>`;
     }
 
-    showWithdrawPopup();
-  }
+    function closeMenu(e) {
+      menuPopup.innerHTML = "";
+    }
 
-  function renderDashboard(username) {
-    const wallet = parseInt(localStorage.getItem(`wallet_${username}`) || 0);
-    const withdrawEnabled = wallet >= WITHDRAW_LIMIT;
-    app.innerHTML = `
-      <div class="container">
-        <div class="wallet">
-          👋 Welcome, <strong>${username}</strong><br>
-          💰 Wallet: ₹${wallet}<br>
-          <p style="font-size:13px; margin-top:5px;">Withdrawals available after ₹${WITHDRAW_LIMIT}.</p>
-          <button class="btn" onclick="withdrawRequest()" ${!withdrawEnabled ? 'disabled' : ''}>Withdraw</button>
-        </div>
+    function goToDashboard() {
+      closeMenu();
+      const user = localStorage.getItem("current_user");
+      if (user) renderDashboard(user);
+    }
 
-        <div class="section">
-          <h3>📅 Daily Tasks (₹15 each)</h3>
-          ${[1, 2, 3].map(i => `
-            <div class="task">
-              <div>
-                ✅ Task ${i}<br>
-                <div class="instructions">Complete offer ${i} via smart link.</div>
-              </div>
-              <button class="btn" onclick="addBalance('task${i}')">Mark ₹15</button>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
+    function openSettings() {
+      closeMenu();
+      const user = localStorage.getItem("current_user");
+      const email = localStorage.getItem(`email_${user}`) || "example@email.com";
+      menuPopup.innerHTML = `
+        <div class="menu-popup" onclick="closeMenu(event)">
+          <div class="menu-content" onclick="event.stopPropagation()">
+            <p>Email: ${email}</p>
+            <button onclick="logout()">Logout</button>
+          </div>
+        </div>`;
+    }
 
-  const user = localStorage.getItem("current_user");
-  if (user) {
-    renderDashboard(user);
-  } else {
-    renderLogin();
-  }
-</script>
+    function logout() {
+      localStorage.removeItem("current_user");
+      location.reload();
+    }
 
+    function openWithdrawPopup() {
+      closeMenu();
+      const user = localStorage.getItem("current_user");
+      const amount = parseInt(localStorage.getItem(`wallet_${user}`) || 0);
+      const name = localStorage.getItem(`bank_name_${user}`) || "";
+      const acc = localStorage.getItem(`bank_acc_${user}`) || "";
+      const ifsc = localStorage.getItem(`bank_ifsc_${user}`) || "";
+      alert("Withdrawal minimum is ₹2000. Fill in your details:");
+      const details = prompt("Enter Name, Account Number, IFSC (comma separated)", `${name},${acc},${ifsc}`);
+      if (details) {
+        const [n, a, i] = details.split(',');
+        localStorage.setItem(`bank_name_${user}`, n);
+        localStorage.setItem(`bank_acc_${user}`, a);
+        localStorage.setItem(`bank_ifsc_${user}`, i);
+        alert("Details saved!");
+      }
+    }
+
+    function openReferral() {
+      closeMenu();
+      const link = location.href;
+      const text = encodeURIComponent("Join this and earn money: " + link);
+      const wa = `https://wa.me/?text=${text}`;
+      const ig = `https://www.instagram.com/direct/new/`;
+      const copy = () => {
+        navigator.clipboard.writeText(link);
+        alert("Link copied!");
+      };
+      menuPopup.innerHTML = `
+        <div class="menu-popup" onclick="closeMenu(event)">
+          <div class="menu-content" onclick="event.stopPropagation()">
+            <button onclick="window.open('${wa}', '_blank')">Send via WhatsApp</button>
+            <button onclick="window.open('${ig}', '_blank')">Open Instagram</button>
+            <button onclick="(${copy.toString()})()">Copy Link</button>
+          </div>
+        </div>`;
+    }
+
+    function openSupport() {
+      closeMenu();
+      const telegramId = "https://t.me/sahil_support";
+      window.open(telegramId, "_blank");
+    }
+  </script>
 </body>
 </html>
