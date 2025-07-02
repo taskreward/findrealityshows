@@ -1,225 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reward Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f9fa;
-      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
     }
-    header {
+
+    .navbar {
+      display: flex;
+      align-items: center;
       background-color: #007bff;
       color: white;
       padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
-    .menu {
+
+    .hamburger {
+      font-size: 22px;
       cursor: pointer;
-      font-size: 24px;
+      margin-right: 15px;
     }
-    .container {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 10px;
-    }
-    .wallet-card {
+
+    .sidebar {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      top: 0;
+      left: -250px;
       background-color: #fff;
-      border-radius: 10px;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
+      z-index: 999;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 15px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      z-index: 998;
+    }
+
+    .wallet {
+      background: #fff;
       padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+      margin: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
-    .task-section {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+    .section {
+      background: #fff;
+      margin: 20px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
+
     .task {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
     }
+
     .btn {
       background-color: #28a745;
-      border: none;
       color: white;
+      border: none;
       padding: 6px 12px;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
     }
+
     .btn[disabled] {
       background-color: #aaa;
       cursor: not-allowed;
     }
-    .info {
-      font-size: 14px;
-      color: #666;
-    }
-    .progress-box {
-      background-color: #e9ecef;
+
+    .live-feed {
+      background: #fff0f6;
       padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .motivation {
-      font-weight: bold;
-      color: #007bff;
-      font-size: 15px;
-      text-align: center;
-      margin: 10px 0;
-    }
-    .live-payouts {
-      background-color: #fff;
-      border-left: 4px solid #28a745;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      font-size: 14px;
-      animation: scrollUp 15s linear infinite;
       overflow: hidden;
-      height: 20px;
+      white-space: nowrap;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #c2185b;
     }
-    @keyframes scrollUp {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-100%); }
+
+    .live-feed span {
+      display: inline-block;
+      padding-right: 50px;
+      animation: scroll 30s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="menu" onclick="alert('Sidebar menu coming in next step')">&#9776;</div>
-  <div>Reward Dashboard</div>
-</header>
+<div class="navbar">
+  <i class="fas fa-bars hamburger" onclick="toggleSidebar()"></i>
+  <h3 style="margin: 0;">Reward Dashboard</h3>
+</div>
 
-<div class="container">
-  <div class="wallet-card">
-    <h2>👋 Welcome, <span id="usernameDisplay">User</span></h2>
-    <p>💰 Wallet Balance: ₹<span id="wallet">0</span></p>
-    <p>🏆 Total Earnings: ₹<span id="totalEarnings">0</span></p>
+<div class="overlay" onclick="toggleSidebar()" id="overlay"></div>
+
+<div class="sidebar" id="sidebar">
+  <a href="#" onclick="navigate('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</a>
+  <a href="#" onclick="navigate('withdrawal')"><i class="fas fa-rupee-sign"></i> Withdrawal</a>
+  <a href="#" onclick="navigate('referral')"><i class="fas fa-user-friends"></i> Referral</a>
+  <a href="#" onclick="navigate('settings')"><i class="fas fa-cog"></i> Settings</a>
+  <a href="https://t.me/Supraa723" target="_blank"><i class="fab fa-telegram"></i> Support</a>
+</div>
+
+<div class="wallet">
+  <h3>Welcome, <span id="username">Priya</span></h3>
+  <p>Wallet Balance: <strong>₹1,250</strong></p>
+  <p>Total Earnings: ₹20,560</p>
+</div>
+
+<div class="section">
+  <h4>✨ Daily Tasks</h4>
+  <div class="task">
+    <div>Complete Offer 1 (10 mins)</div>
+    <button class="btn">Claim ₹12</button>
   </div>
-
-  <div class="progress-box">
-    🧾 Daily Tasks: <span id="dailyProgress">0/6</span> | 📆 Weekly Tasks: <span id="weeklyProgress">0/4</span>
+  <div class="task">
+    <div>Complete Offer 2</div>
+    <button class="btn">Claim ₹14</button>
   </div>
-
-  <div class="motivation">💡 "Complete all 10 tasks daily and reach ₹2000 fast. Withdrawals are real and weekly!"</div>
-
-  <div class="task-section">
-    <h3>📅 Daily Tasks</h3>
-    <div id="dailyTasks"></div>
+  <div class="task">
+    <div>Complete Offer 3</div>
+    <button class="btn">Claim ₹13</button>
   </div>
+  <!-- more daily tasks -->
+</div>
 
-  <div class="task-section">
-    <h3>📆 Weekly Tasks</h3>
-    <div id="weeklyTasks"></div>
+<div class="section">
+  <h4>★ Weekly Tasks</h4>
+  <div class="task">
+    <div>Install App X</div>
+    <button class="btn">Claim ₹15</button>
   </div>
+  <!-- more weekly tasks -->
+</div>
 
-  <div class="live-payouts" id="liveUpdates"></div>
+<div class="live-feed">
+  <span>✨ Priya just earned ₹1000! &nbsp;|&nbsp; Amit withdrew ₹2000! &nbsp;|&nbsp; Riya completed 6 tasks today! &nbsp;|&nbsp; Arjun just earned ₹2900!</span>
 </div>
 
 <script>
-const walletEl = document.getElementById('wallet');
-const usernameEl = document.getElementById('usernameDisplay');
-const totalEl = document.getElementById('totalEarnings');
-const dailyProgress = document.getElementById('dailyProgress');
-const weeklyProgress = document.getElementById('weeklyProgress');
-
-const user = localStorage.getItem("current_user") || "demo";
-usernameEl.innerText = user;
-
-let wallet = parseInt(localStorage.getItem(`wallet_${user}`) || 0);
-let totalEarned = parseInt(localStorage.getItem(`total_${user}`) || 0);
-let log = JSON.parse(localStorage.getItem(`taskLog_${user}`) || '{}');
-
-function updateUI() {
-  walletEl.innerText = wallet;
-  totalEl.innerText = totalEarned;
-
-  let dailyDone = 0, weeklyDone = 0;
-  for (let i = 1; i <= 6; i++) if (log[`d${i}`]) dailyDone++;
-  for (let i = 1; i <= 4; i++) if (log[`w${i}`]) weeklyDone++;
-
-  dailyProgress.innerText = `${dailyDone}/6`;
-  weeklyProgress.innerText = `${weeklyDone}/4`;
-}
-
-function renderTasks() {
-  const now = Date.now();
-  const daily = [], weekly = [];
-
-  for (let i = 1; i <= 6; i++) {
-    const id = `d${i}`;
-    const reward = Math.floor(Math.random() * 6) + 10;
-    const lastTime = log[id] || 0;
-    const locked = now - lastTime < 24 * 60 * 60 * 1000;
-    daily.push(`<div class="task">
-      <div>✅ Daily Task ${i} - ₹${reward}</div>
-      <button class="btn" onclick="startTask('${id}', ${reward})" ${locked ? 'disabled' : ''}>Start</button>
-    </div>`);
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const isOpen = sidebar.style.left === '0px';
+    sidebar.style.left = isOpen ? '-250px' : '0';
+    overlay.style.display = isOpen ? 'none' : 'block';
   }
 
-  for (let i = 1; i <= 4; i++) {
-    const id = `w${i}`;
-    const reward = 15;
-    const lastTime = log[id] || 0;
-    const locked = now - lastTime < 24 * 60 * 60 * 1000;
-    weekly.push(`<div class="task">
-      <div>📘 Weekly Task ${i} - ₹${reward}</div>
-      <button class="btn" onclick="startTask('${id}', ${reward})" ${locked ? 'disabled' : ''}>Start</button>
-    </div>`);
+  function navigate(section) {
+    alert("Navigation to: " + section + " (Implement later)");
+    toggleSidebar();
   }
-
-  document.getElementById("dailyTasks").innerHTML = daily.join('');
-  document.getElementById("weeklyTasks").innerHTML = weekly.join('');
-}
-
-function startTask(id, reward) {
-  const url = `https://example.com/task${id}`;
-  window.open(url, '_blank');
-  alert("Task started. Please wait 2.5 minutes then return to get your reward.");
-  setTimeout(() => {
-    log[id] = Date.now();
-    wallet += reward;
-    totalEarned += reward;
-    localStorage.setItem(`wallet_${user}`, wallet);
-    localStorage.setItem(`total_${user}`, totalEarned);
-    localStorage.setItem(`taskLog_${user}`, JSON.stringify(log));
-    updateUI();
-    renderTasks();
-    alert(`₹${reward} has been added to your wallet.`);
-  }, 150000);
-}
-
-function startLivePayouts() {
-  const names = ["Priya", "Amit", "Kavita", "Raj", "Sneha", "Arjun"];
-  const updates = [];
-  for (let i = 0; i < 20; i++) {
-    const name = names[Math.floor(Math.random() * names.length)];
-    const amount = Math.floor(Math.random() * 2001) + 1000;
-    updates.push(`💸 ${name} just withdrew ₹${amount} successfully!`);
-  }
-  document.getElementById("liveUpdates").innerText = updates.join(" \u2022 ");
-}
-
-updateUI();
-renderTasks();
-startLivePayouts();
 </script>
 </body>
 </html>
