@@ -3,181 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reward Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f2f2f2;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-    }
-    .wallet {
-      background-color: #007bff;
-      color: white;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .section {
-      background-color: white;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .task {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 10px 0;
-    }
-    .btn {
-      padding: 5px 10px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .btn[disabled] {
-      background-color: #888;
-      cursor: not-allowed;
-    }
-    .menu-icon {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      font-size: 24px;
-      background: #333;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 999;
-    }
-    .menu-popup {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 998;
-    }
-    .menu-content {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    .menu-content button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-    }
-  </style>
+  <title>Task Rewards App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="menu-icon" onclick="showMenu()">☰</div>
-  <div id="menuPopup"></div>
-  <div id="app"></div>
+<body class="bg-gray-100 text-gray-800">
+  <!-- Header with Menu -->
+  <div class="bg-blue-500 text-white p-4 flex justify-between items-center">
+    <button onclick="toggleMenu()" class="text-2xl font-bold">&#9776;</button>
+    <div>
+      <p class="text-sm">Welcome,</p>
+      <p class="text-md font-bold">harryoliver261@gmail.com</p>
+    </div>
+    <div class="text-yellow-300 font-semibold">
+      💰 Wallet: ₹90
+    </div>
+  </div>
+
+  <!-- Hidden Side Menu -->
+  <div id="sideMenu" class="fixed top-0 left-0 w-60 h-full bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50">
+    <div class="p-4 border-b font-bold text-lg">Menu</div>
+    <ul class="p-4 space-y-3">
+      <li><button onclick="showPage('dashboard')" class="w-full text-left">Dashboard</button></li>
+      <li><button onclick="showPopup('withdraw')" class="w-full text-left" disabled>Withdrawal</button></li>
+      <li><button onclick="showPopup('referral')" class="w-full text-left">Referral</button></li>
+      <li><button onclick="showPopup('settings')" class="w-full text-left">Setting</button></li>
+      <li><a href="https://t.me/YourTelegramID" target="_blank" class="block">Support</a></li>
+    </ul>
+  </div>
+
+  <!-- Dashboard (Tasks) -->
+  <div id="dashboard" class="p-4">
+    <div class="bg-white p-4 rounded shadow">
+      <p class="font-bold text-lg">📅 Daily Tasks (₹15 each)</p>
+      <ul class="mt-3 space-y-2">
+        <li class="flex justify-between items-center">
+          <div>
+            <p class="font-semibold text-green-600">✅ Task 1</p>
+            <p class="text-sm">Complete offer 1 via smart link.</p>
+          </div>
+          <button class="bg-green-500 text-white px-3 py-1 rounded">Mark ₹15</button>
+        </li>
+        <li class="flex justify-between items-center">
+          <div>
+            <p class="font-semibold text-green-600">✅ Task 2</p>
+            <p class="text-sm">Complete offer 2 via smart link.</p>
+          </div>
+          <button class="bg-green-500 text-white px-3 py-1 rounded">Mark ₹15</button>
+        </li>
+        <li class="flex justify-between items-center">
+          <div>
+            <p class="font-semibold text-green-600">✅ Task 3</p>
+            <p class="text-sm">Complete offer 3 via smart link.</p>
+          </div>
+          <button class="bg-green-500 text-white px-3 py-1 rounded">Mark ₹15</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Popups -->
+  <div id="popup" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg w-11/12 max-w-md relative">
+      <button onclick="closePopup()" class="absolute top-2 right-3 text-gray-500">&times;</button>
+      <div id="popupContent"></div>
+    </div>
+  </div>
 
   <script>
-    const app = document.getElementById("app");
-    const menuPopup = document.getElementById("menuPopup");
+    function toggleMenu() {
+      const menu = document.getElementById('sideMenu');
+      menu.classList.toggle('-translate-x-full');
+    }
 
-    function showMenu() {
-      menuPopup.innerHTML = `
-        <div class="menu-popup" onclick="closeMenu(event)">
-          <div class="menu-content" onclick="event.stopPropagation()">
-            <button onclick="goToDashboard()">Dashboard</button>
-            <button onclick="openWithdrawPopup()">Withdraw</button>
-            <button onclick="openReferral()">Referral</button>
-            <button onclick="openSettings()">Settings</button>
-            <button onclick="openSupport()">Support</button>
+    function showPage(pageId) {
+      document.getElementById('dashboard').style.display = (pageId === 'dashboard') ? 'block' : 'none';
+      toggleMenu();
+    }
+
+    function showPopup(type) {
+      let content = '';
+      if (type === 'withdraw') {
+        content = `
+          <h2 class="text-xl font-bold mb-2">Withdrawal (Minimum: ₹2000)</h2>
+          <p class="text-sm mb-4">Enter your account details:</p>
+          <input type="text" placeholder="Account Holder Name" class="border w-full p-2 rounded mb-2" />
+          <input type="text" placeholder="Bank Account Number" class="border w-full p-2 rounded mb-2" />
+          <input type="text" placeholder="IFSC Code" class="border w-full p-2 rounded mb-4" />
+          <button disabled class="bg-gray-400 text-white px-4 py-2 rounded w-full">Withdraw</button>
+        `;
+      } else if (type === 'settings') {
+        content = `
+          <h2 class="text-xl font-bold mb-4">Settings</h2>
+          <p class="mb-2">Email: harryoliver261@gmail.com</p>
+          <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded w-full">Logout</button>
+        `;
+      } else if (type === 'referral') {
+        const url = encodeURIComponent(window.location.href);
+        content = `
+          <h2 class="text-xl font-bold mb-4">Refer & Earn</h2>
+          <p class="mb-2">Share this link:</p>
+          <div class="bg-gray-100 p-2 mb-3 rounded text-sm">${window.location.href}</div>
+          <div class="flex space-x-2">
+            <a href="https://wa.me/?text=${url}" target="_blank" class="bg-green-500 text-white px-3 py-1 rounded">WhatsApp</a>
+            <a href="https://www.instagram.com" target="_blank" class="bg-pink-500 text-white px-3 py-1 rounded">Instagram</a>
+            <button onclick="copyLink('${window.location.href}')" class="bg-blue-500 text-white px-3 py-1 rounded">Copy Link</button>
           </div>
-        </div>`;
+        `;
+      }
+      document.getElementById('popupContent').innerHTML = content;
+      document.getElementById('popup').classList.remove('hidden');
+      toggleMenu();
     }
 
-    function closeMenu(e) {
-      menuPopup.innerHTML = "";
-    }
-
-    function goToDashboard() {
-      closeMenu();
-      const user = localStorage.getItem("current_user");
-      if (user) renderDashboard(user);
-    }
-
-    function openSettings() {
-      closeMenu();
-      const user = localStorage.getItem("current_user");
-      const email = localStorage.getItem(`email_${user}`) || "example@email.com";
-      menuPopup.innerHTML = `
-        <div class="menu-popup" onclick="closeMenu(event)">
-          <div class="menu-content" onclick="event.stopPropagation()">
-            <p>Email: ${email}</p>
-            <button onclick="logout()">Logout</button>
-          </div>
-        </div>`;
+    function closePopup() {
+      document.getElementById('popup').classList.add('hidden');
     }
 
     function logout() {
-      localStorage.removeItem("current_user");
-      location.reload();
+      alert("Logged out successfully.");
+      // Add logout logic here
     }
 
-    function openWithdrawPopup() {
-      closeMenu();
-      const user = localStorage.getItem("current_user");
-      const amount = parseInt(localStorage.getItem(`wallet_${user}`) || 0);
-      const name = localStorage.getItem(`bank_name_${user}`) || "";
-      const acc = localStorage.getItem(`bank_acc_${user}`) || "";
-      const ifsc = localStorage.getItem(`bank_ifsc_${user}`) || "";
-      alert("Withdrawal minimum is ₹2000. Fill in your details:");
-      const details = prompt("Enter Name, Account Number, IFSC (comma separated)", `${name},${acc},${ifsc}`);
-      if (details) {
-        const [n, a, i] = details.split(',');
-        localStorage.setItem(`bank_name_${user}`, n);
-        localStorage.setItem(`bank_acc_${user}`, a);
-        localStorage.setItem(`bank_ifsc_${user}`, i);
-        alert("Details saved!");
-      }
-    }
-
-    function openReferral() {
-      closeMenu();
-      const link = location.href;
-      const text = encodeURIComponent("Join this and earn money: " + link);
-      const wa = `https://wa.me/?text=${text}`;
-      const ig = `https://www.instagram.com/direct/new/`;
-      const copy = () => {
-        navigator.clipboard.writeText(link);
-        alert("Link copied!");
-      };
-      menuPopup.innerHTML = `
-        <div class="menu-popup" onclick="closeMenu(event)">
-          <div class="menu-content" onclick="event.stopPropagation()">
-            <button onclick="window.open('${wa}', '_blank')">Send via WhatsApp</button>
-            <button onclick="window.open('${ig}', '_blank')">Open Instagram</button>
-            <button onclick="(${copy.toString()})()">Copy Link</button>
-          </div>
-        </div>`;
-    }
-
-    function openSupport() {
-      closeMenu();
-      const telegramId = "https://t.me/sahil_support";
-      window.open(telegramId, "_blank");
+    function copyLink(link) {
+      navigator.clipboard.writeText(link);
+      alert("Link copied to clipboard!");
     }
   </script>
 </body>
