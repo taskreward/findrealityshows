@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Reward Dashboard</title>
   <style>
     body {
@@ -82,23 +82,20 @@
     }
     .btn[disabled] {
       background-color: #ccc;
+      cursor: default;
     }
-    .live-toast {
+    .live-feed {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background-color: #333;
+      background: #333;
       color: white;
-      padding: 12px 20px;
+      padding: 10px 15px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-width: 300px;
       z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-    .live-toast.show {
-      opacity: 1;
     }
     .popup-overlay {
       position: fixed;
@@ -139,6 +136,8 @@
       💰 Wallet: ₹<span id="wallet-balance">1280</span>
     </div>
 
+    <div id="live-toast" class="live-feed" style="display: none;"></div>
+
     <div class="section">
       <h3>📅 Daily Tasks</h3>
       <div class="task"><span>Task 1 - Watch video</span><button class="btn">₹12</button></div>
@@ -159,9 +158,26 @@
   </div>
 
   <div id="popup"></div>
-  <div id="toast" class="live-toast"></div>
 
   <script>
+    const names = ["Priya", "Ravi", "Anjali", "Arjun", "Kavita", "Rahul"];
+    let toastIndex = 0;
+
+    function showToast() {
+      const toast = document.getElementById("live-toast");
+      toast.textContent = `${names[toastIndex]} withdraws ₹100`;
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+      toastIndex = (toastIndex + 1) % names.length;
+    }
+
+    setTimeout(() => {
+      showToast();
+      setInterval(showToast, 5000);
+    }, 1000);
+
     function toggleSidebar() {
       const sidebar = document.getElementById("sidebar");
       sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
@@ -172,20 +188,47 @@
     }
 
     function openWithdrawPopup() {
-      const wallet = 1280;
+      const wallet = parseInt(document.getElementById("wallet-balance").textContent);
       const minAmount = 2000;
+
+      const savedAccount = localStorage.getItem('accountNumber') || '';
+      const savedIFSC = localStorage.getItem('ifscCode') || '';
+      const savedHolder = localStorage.getItem('accountHolder') || '';
+
+      if (wallet < minAmount) {
+        return; // Do nothing if balance is below threshold
+      }
+
       document.getElementById("popup").innerHTML = `
         <div class="popup-overlay" onclick="closePopup(event)">
           <div class="popup-content" onclick="event.stopPropagation()">
             <h3>Withdraw Request</h3>
-            <p>Minimum ₹2000 required to withdraw. Your balance: ₹${wallet}</p>
-            <input placeholder="Bank Account Number" style="width: 100%; margin-bottom: 10px;" />
-            <input placeholder="IFSC Code" style="width: 100%; margin-bottom: 10px;" />
-            <input placeholder="Account Holder Name" style="width: 100%; margin-bottom: 10px;" />
-            <button class="btn" ${wallet < minAmount ? "disabled" : ""}>Request Withdrawal</button>
-            <p style="font-size: 12px; color: gray; margin-top: 10px;">Withdrawals are processed weekly.</p>
+            <p>Your balance: ₹${wallet}</p>
+            <input id="accNum" placeholder="Bank Account Number" value="${savedAccount}" style="width: 100%; margin-bottom: 10px;" />
+            <input id="ifsc" placeholder="IFSC Code" value="${savedIFSC}" style="width: 100%; margin-bottom: 10px;" />
+            <input id="holder" placeholder="Account Holder Name" value="${savedHolder}" style="width: 100%; margin-bottom: 10px;" />
+            <button class="btn" onclick="submitWithdrawal()">Request Withdrawal</button>
+            <div style="margin-top: 15px; font-size: 14px; background: #f1f1f1; padding: 10px; border-radius: 6px;">
+              <strong>Withdrawal Instructions</strong><br/>
+              To unlock your withdrawal, please deposit ₹399.<br/>
+              <strong>UPI:</strong> <code>sahilzeerak123@okhdfcbank</code><br/>
+              Once payment is done, <a href="https://t.me/Supraa723" target="_blank">contact support</a> to confirm and release your reward.
+            </div>
           </div>
         </div>`;
+    }
+
+    function submitWithdrawal() {
+      const acc = document.getElementById("accNum").value;
+      const ifsc = document.getElementById("ifsc").value;
+      const holder = document.getElementById("holder").value;
+
+      localStorage.setItem('accountNumber', acc);
+      localStorage.setItem('ifscCode', ifsc);
+      localStorage.setItem('accountHolder', holder);
+
+      alert("Withdrawal request submitted!");
+      closePopup();
     }
 
     function openReferralPopup() {
@@ -222,29 +265,6 @@
       alert("Logged out");
       window.location.reload();
     }
-
-    // Toast Live Feed Logic
-    const users = [
-      "Priya", "Ravi", "Anjali", "Arjun", "Kavita", "Rahul", "Meena", "Rohan", "Nisha"
-    ];
-    const toast = document.getElementById("toast");
-
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 3000); // show for 3 seconds
-    }
-
-    let i = 0;
-    setInterval(() => {
-      const user = users[i % users.length];
-      const amount = 100 + Math.floor(Math.random() * 20) * 100;
-      showToast(`${user} withdraws ₹${amount}`);
-      i++;
-    }, 5000); // show new one every 5 seconds
-
   </script>
 </body>
 </html>
