@@ -84,20 +84,20 @@
       background-color: #ccc;
     }
 
-    /* Toast-style live feed */
+    /* Toast-style live feed - bottom right with neutral dark style */
     .live-feed {
       position: fixed;
-      top: 80px;
+      bottom: 20px;
       right: 20px;
       z-index: 1001;
     }
     .toast {
-      background-color: #007bff;
+      background-color: #333;
       color: white;
       padding: 10px 15px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin-top: 10px;
       animation: fadeInOut 4s ease-in-out forwards;
       opacity: 0;
     }
@@ -147,7 +147,7 @@
       💰 Wallet: ₹<span id="wallet-balance">1280</span>
     </div>
 
-    <!-- Updated Live Feed (toast style) -->
+    <!-- Toast-style Live Feed -->
     <div class="live-feed" id="toast-container"></div>
 
     <div class="section">
