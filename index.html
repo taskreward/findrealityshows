@@ -4,177 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reward Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f9fafb, #edf2f7);
-      color: #1a202c;
-    }
-    .header {
-      background-color: #1e293b;
-      color: white;
-      padding: 16px 24px;
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0B1740; color: #FFF; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Tabs */
+    .tabs {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      background: #0B1740;
+      border-bottom: 1px solid #24315C;
     }
-    .title {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-    .menu {
-      font-size: 1.25rem;
+    .tab {
+      flex: 1;
+      padding: 14px 0;
+      text-align: center;
+      color: #A0AEC0;
+      border: none;
+      background: none;
       cursor: pointer;
-    }
-    .container {
-      max-width: 960px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
-    .card {
-      background: white;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-      margin-bottom: 24px;
-    }
-    .card h2 {
-      font-size: 1.25rem;
-      margin-bottom: 12px;
+      font-size: 1rem;
       font-weight: 600;
     }
-    .wallet {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.1rem;
+    .tab.active {
+      color: #FFD700;
+      border-bottom: 3px solid #FFD700;
     }
-    .wallet strong {
-      font-size: 1.2rem;
+
+    /* Tasks Card */
+    .tasks-card {
+      flex: 1;
+      overflow-y: auto;
+      background: #0B1740;
+      padding: 12px 24px 120px;
     }
     .task {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 0;
+      border-bottom: 1px solid #24315C;
     }
-    .task:last-child {
-      border-bottom: none;
-    }
-    .btn {
-      background-color: #3b82f6;
-      color: white;
-      padding: 6px 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .btn:hover {
-      background-color: #2563eb;
-    }
-    .live-toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #1e293b;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      font-size: 0.95rem;
-      animation: fadeInOut 5s ease-in-out infinite;
-    }
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translateY(30px); }
-      10% { opacity: 1; transform: translateY(0); }
-      90% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-20px); }
-    }
-    .footer-links {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      margin-top: 40px;
-    }
-    .footer-links a {
-      color: #3b82f6;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .footer-links a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="title">Reward Dashboard</div>
-    <div class="menu" onclick="toggleMenu()">☰</div>
-  </div>
-
-  <div class="container">
-    <div class="card wallet">
-      <div>👋 Welcome, <strong>Priya</strong></div>
-      <div>💰 Wallet: ₹<span id="wallet-balance">1280</span></div>
-    </div>
-
-    <div class="card">
-      <h2>📅 Daily Tasks</h2>
-      <div class="task"><span>Watch a Video</span><button class="btn">₹12</button></div>
-      <div class="task"><span>Sign Up to Partner Site</span><button class="btn">₹14</button></div>
-      <div class="task"><span>Install App</span><button class="btn">₹13</button></div>
-      <div class="task"><span>Take a Quick Survey</span><button class="btn">₹15</button></div>
-      <div class="task"><span>Like & Share on Social Media</span><button class="btn">₹10</button></div>
-      <div class="task"><span>Mini Quiz</span><button class="btn">₹11</button></div>
-    </div>
-
-    <div class="card">
-      <h2>📆 Weekly Tasks</h2>
-      <div class="task"><span>Complete Full Registration</span><button class="btn">₹15</button></div>
-      <div class="task"><span>App Install + Survey</span><button class="btn">₹15</button></div>
-      <div class="task"><span>Submit Feedback</span><button class="btn">₹15</button></div>
-      <div class="task"><span>Refer a Friend</span><button class="btn">₹15</button></div>
-    </div>
-
-    <div class="footer-links">
-      <a href="#">Dashboard</a>
-      <a href="#" onclick="alert('Withdrawal Instructions')">Withdraw</a>
-      <a href="https://t.me/Supraa723" target="_blank">Support</a>
-    </div>
-  </div>
-
-  <div id="toast" class="live-toast" style="display:none;"></div>
-
-  <script>
-    const messages = [
-      "Priya withdraws ₹1000",
-      "Ravi withdraws ₹1200",
-      "Anjali withdraws ₹2500",
-      "Arjun withdraws ₹1400",
-      "Kavita withdraws ₹2000",
-      "Rahul withdraws ₹3000"
-    ];
-
-    let index = 0;
-    const toast = document.getElementById("toast");
-
-    function showToast() {
-      toast.textContent = messages[index];
-      toast.style.display = "block";
-      index = (index + 1) % messages.length;
-    }
-
-    setInterval(showToast, 6000); // 5s visible, 1s fade
-    showToast();
-  </script>
-</body>
-</html>
+    .task:last-child { border-bottom: none;
