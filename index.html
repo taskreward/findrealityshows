@@ -3,196 +3,191 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mission Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <title>Tasks & Earn Mobile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family:'Inter', sans-serif;
-      background:#0B1740;
-      color:#FFF;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
+      font-family: 'Inter', sans-serif;
+      background: #f0f4f8;
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .header {
-      background:#0B1740;
-      padding:16px 24px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+    nav.tabs {
+      display: flex;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
-    .title { font-size:1.5rem; font-weight:600; }
-    .menu { font-size:1.25rem; cursor:pointer; }
-
-    .tabs {
-      display:flex;
-      border-bottom:1px solid #24315C;
-    }
-    .tab {
-      flex:1;
-      text-align:center;
-      padding:12px 0;
-      font-weight:600;
-      color:#A0AEC0;
-      background:none;
-      border:none;
-      cursor:pointer;
-    }
-    .tab.active {
-      color:#FFD700;
-      border-bottom:3px solid #FFD700;
-    }
-
-    .tasks {
-      flex:1;
-      overflow-y:auto;
-      padding:12px 24px;
-    }
-    .task {
-      display:flex;
-      align-items:center;
-      padding:12px 0;
-      border-bottom:1px solid #24315C;
-    }
-    .task:last-child { border-bottom:none; }
-    .task span { flex:1; }
-    .btn {
-      padding:6px 16px;
-      border:none;
-      border-radius:6px;
-      font-weight:600;
-      cursor:pointer;
-    }
-    .btn.claim { background:#FFD700; color:#000; }
-    .btn.go { background:#28A745; color:#FFF; }
-
-    .cta {
-      padding:16px;
-      background:#0B1740;
-      text-align:center;
-      position:sticky;
-      bottom:0;
-    }
-    .btn.play {
-      background:#FFF;
-      color:#4B4EFF;
-      border-radius:999px;
-      padding:12px 24px;
-      display:inline-flex;
-      align-items:center;
-      font-weight:600;
-    }
-    .btn.play svg {
-      width:20px; height:20px;
-      margin-right:8px;
-    }
-
-    .live-toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #1e293b;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    nav.tabs button {
+      flex: 1;
+      padding: 12px;
       font-size: 0.95rem;
-      animation: fadeInOut 5s ease-in-out infinite;
-      display: none;
+      font-weight: 600;
+      color: #6b7280;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s;
     }
-    @keyframes fadeInOut { 0%{opacity:0;transform:translateY(30px);}10%{opacity:1;transform:translateY(0);}90%{opacity:1;}100%{opacity:0;transform:translateY(-20px);} }
+    nav.tabs button.active {
+      color: #111827;
+      border-bottom: 3px solid #f59e0b;
+    }
+    .task-list {
+      list-style: none;
+      padding: 16px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .task-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      margin-bottom: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .task-card:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+    .task-info {
+      flex: 1;
+    }
+    .task-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .task-reward {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      color: #f59e0b;
+    }
+    .btn-claim, .btn-go {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .btn-claim {
+      background: #f59e0b;
+      color: #ffffff;
+    }
+    .btn-go {
+      background: #10b981;
+      color: #ffffff;
+      margin-left: 8px;
+    }
+    .cta {
+      padding: 12px 16px;
+      background: #fff;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .btn-play {
+      background: #4b4eff;
+      color: #ffffff;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 24px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+    .btn-play:hover {
+      background: #3a3edb;
+    }
+    .btn-play svg {
+      margin-left: 8px;
+      width: 20px;
+      height: 20px;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="title">Reward Dashboard</div>
-    <div class="menu" onclick="toggleMenu()">☰</div>
-  </div>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="daily">Daily</button>
-    <button class="tab" data-tab="weekly">Weekly</button>
-    <button class="tab" data-tab="monthly">Monthly</button>
-  </div>
+  <nav class="tabs">
+    <button data-tab="daily" class="active">Daily</button>
+    <button data-tab="weekly">Weekly</button>
+    <button data-tab="monthly">Monthly</button>
+  </nav>
 
-  <div class="tasks" id="tasks-container">
-    <!-- Tasks will be injected here -->
-  </div>
+  <ul class="task-list" id="task-list">
+    <!-- Task cards will render here -->
+  </ul>
 
   <div class="cta">
-    <button class="btn play">
+    <button class="btn-play">
+      PLAY GAME
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M10 17l5-5-5-5"/>
-      </svg>PLAY GAME
+        <path d="M5 3l14 9-14 9V3z"/>
+      </svg>
     </button>
   </div>
 
-  <div id="toast" class="live-toast"></div>
-
   <script>
-    const taskData = {
+    const tasks = {
       daily: [
-        ['Watch a Video', '₹12', 'claim'],
-        ['Sign Up to Partner Site', '₹14', 'go'],
-        ['Install App', '₹13','go'],
-        ['Take a Quick Survey', '₹15','claim'],
-        ['Like & Share on Social Media', '₹10','claim'],
-        ['Mini Quiz','₹11','go']
+        { title: "🎥 Watch a Video", reward: "₹12", action: "claim" },
+        { title: "📝 Take a Quick Survey", reward: "₹15", action: "go" },
+        { title: "🔍 Search & Learn", reward: "₹10", action: "claim" },
       ],
       weekly: [
-        ['Complete Full Registration','₹15','claim'],
-        ['App Install + Survey','₹15','go'],
-        ['Submit Feedback','₹15','claim'],
-        ['Refer a Friend','₹15','go']
+        { title: "🛎️ Complete Registration", reward: "₹25", action: "claim" },
+        { title: "📲 Install App + Survey", reward: "₹20", action: "go" },
       ],
       monthly: [
-        ['Monthly Challenge','₹50','go'],
-        ['Mega Survey','₹40','claim']
-      ]
+        { title: "🎮 Play a Mini Game", reward: "₹30", action: "go" },
+        { title: "🏆 Refer a Friend", reward: "₹35", action: "claim" },
+      ],
     };
-    const container = document.getElementById('tasks-container');
+
+    const listEl = document.getElementById('task-list');
+    const tabs = document.querySelectorAll('nav.tabs button');
 
     function renderTasks(tab) {
-      container.innerHTML = '';
-      taskData[tab].forEach(([title, reward, type]) => {
-        const div = document.createElement('div');
-        div.className = 'task';
-        div.innerHTML = \`
-          <span>\${title}</span>
-          <button class="btn \${type}">\${reward}</button>
-        \`;
-        div.querySelector('button').onclick = () => alert(\`\${type === 'claim' ? 'Claiming' : 'Going to'}: \${title}\`);
-        container.appendChild(div);
+      listEl.innerHTML = '';
+      tasks[tab].forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'task-card';
+        li.innerHTML = `
+          <div class="task-info">
+            <div class="task-title">${task.title}</div>
+            <div class="task-reward">${task.reward}</div>
+          </div>
+          <button class="${task.action === 'claim' ? 'btn-claim' : 'btn-go'}">
+            ${task.action === 'claim' ? 'Claim' : 'Go'}
+          </button>
+        `;
+        li.querySelector('button').addEventListener('click', () => {
+          alert(`${task.action === 'claim' ? 'Claiming' : 'Going to'}: ${task.title}`);
+        });
+        listEl.appendChild(li);
       });
     }
 
-    document.querySelectorAll('.tab').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        renderTasks(btn.dataset.tab);
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderTasks(tab.dataset.tab);
       });
     });
 
+    // Initial load
     renderTasks('daily');
-
-    // Toast notification
-    const messages = ["Priya withdraws ₹1000", "Ravi withdraws ₹1200", "Anjali withdraws ₹2500"];
-    let idx = 0;
-    const toast = document.getElementById('toast');
-    function showToast(){
-      toast.textContent = messages[idx];
-      toast.style.display = 'block';
-      idx = (idx+1)%messages.length;
-      setTimeout(()=>toast.style.display='none',5000);
-    }
-    setInterval(showToast,6000);
-    showToast();
-
-    function toggleMenu(){
-      alert('Menu clicked');
-    }
   </script>
+
 </body>
 </html>
