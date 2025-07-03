@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Casino Tasks Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Casino Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -16,32 +16,44 @@
       --accent-blue: #4B4EFF;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family:'Inter',sans-serif;
-      background:var(--bg);
-      color:var(--text-primary);
-      display:flex;
-      flex-direction:column;
-      min-height:100vh;
-    }
+    body { font-family:'Inter',sans-serif; color:var(--text-primary); background:var(--bg); }
     header {
-      padding:16px;
       background:var(--card-bg);
+      padding:16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       box-shadow:0 2px 8px rgba(0,0,0,0.8);
     }
+    .user-info {
+      display:flex;
+      align-items:center;
+    }
+    .avatar {
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:#A0A8B0;
+      margin-right:8px;
+    }
+    .user-text { line-height:1.1; }
+    .user-text .name { font-weight:600; }
+    .user-text .meta { font-size:0.8rem; color:var(--text-secondary); }
+
     .kpi-bar {
       display:flex;
       gap:12px;
+      margin:24px 16px;
     }
     .kpi {
       flex:1;
-      background:var(--bg);
+      background:var(--card-bg);
       border:1px solid var(--text-secondary);
       padding:12px;
       border-radius:8px;
       text-align:center;
     }
-    .kpi h3 { font-size:1.1rem; color:var(--accent-gold); margin-bottom:4px; }
+    .kpi h3 { color:var(--accent-gold); font-size:1.1rem; margin-bottom:4px; }
     .kpi p { font-size:0.85rem; color:var(--text-secondary); }
 
     nav.tabs {
@@ -58,24 +70,27 @@
       cursor:pointer;
       position:relative;
     }
-    nav.tabs button.active {
-      color:var(--text-primary);
-    }
+    nav.tabs button.active { color:var(--text-primary); }
     nav.tabs button.active::after {
       content:'';
       position:absolute;
-      bottom:0;
-      left:20%;
-      right:20%;
+      bottom:0; left:20%; right:20%;
       height:3px;
       background:var(--accent-gold);
       border-radius:2px;
     }
 
+    .live-feed {
+      margin:8px 16px;
+      font-size:0.85rem;
+      color:var(--accent-green);
+      opacity:0.9;
+      text-align:center;
+    }
+
     .task-list {
-      flex:1;
-      overflow-y:auto;
       padding:16px;
+      overflow-y:auto;
     }
     .task-card {
       display:flex;
@@ -86,21 +101,16 @@
       padding:16px;
       border-radius:12px;
       box-shadow:0 2px 6px rgba(0,0,0,0.8);
-      transition:transform .1s, box-shadow .1s;
+      transition:transform .1s;
     }
-    .task-card:active {
-      transform:scale(0.97);
-      box-shadow:0 1px 4px rgba(0,0,0,0.9);
-    }
+    .task-card:active { transform:scale(0.97); }
     .accent {
       width:6px;
       height:100%;
       border-radius:4px;
       margin-right:12px;
     }
-    .task-info {
-      flex:1;
-    }
+    .task-info { flex:1; }
     .task-title { font-size:1rem; font-weight:600; }
     .task-meta { font-size:0.85rem; color:var(--text-secondary); margin-top:4px; }
     .btn-action {
@@ -114,44 +124,25 @@
     }
     .btn-claim { background:var(--accent-gold); }
     .btn-go { background:var(--accent-green); }
-
-    .live-feed {
-      margin:8px 16px;
-      font-size:0.85rem;
-      color:var(--accent-green);
-      opacity:0.9;
-      text-align:center;
-    }
-
-    .cta {
-      padding:12px;
-      background:var(--card-bg);
-      box-shadow:0 -2px 8px rgba(0,0,0,0.8);
-      text-align:center;
-    }
-    .btn-play {
-      background:var(--accent-blue);
-      color:var(--bg);
-      padding:14px 28px;
-      border:none;
-      border-radius:24px;
-      font-weight:700;
-      font-size:1rem;
-      cursor:pointer;
-      transition:background .2s;
-    }
-    .btn-play:hover { background: #3a40d5; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="kpi-bar">
-      <div class="kpi"><h3>₹1,280</h3><p>Balance</p></div>
-      <div class="kpi"><h3>12</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3>₹120</h3><p>Weekly Win</p></div>
+    <div class="user-info">
+      <div class="avatar"></div>
+      <div class="user-text">
+        <div class="name">Priya</div>
+        <div class="meta">ID: 3038792 | VIP0</div>
+      </div>
     </div>
   </header>
+
+  <div class="kpi-bar">
+    <div class="kpi"><h3>₹1,280</h3><p>Balance</p></div>
+    <div class="kpi"><h3>12</h3><p>Tasks Done</p></div>
+    <div class="kpi"><h3>₹120</h3><p>Weekly Win</p></div>
+  </div>
 
   <nav class="tabs">
     <button data-tab="daily" class="active">Daily</button>
@@ -161,15 +152,10 @@
 
   <div class="live-feed">🎉 Ravi just won ₹500!</div>
 
-  <ul class="task-list" id="task-list">
-    <!-- injected tasks -->
-  </ul>
-
-  <div class="cta">
-    <button class="btn-play">🎲 PLAY NOW</button>
-  </div>
+  <ul class="task-list" id="task-list"></ul>
 
   <script>
+    // Sample tasks structure remains the same as earlier; only rendering changed
     const tasks = {
       daily: [
         { title:"🃏 Blackjack Bet", meta:"Live odds: 3.5x", reward:"Bet ₹100", action:"go", color:"var(--accent-green)" },
@@ -185,11 +171,11 @@
     };
 
     const listEl = document.getElementById("task-list");
-    const tabs = document.querySelectorAll("nav.tabs button");
+    const tabBtns = document.querySelectorAll("nav.tabs button");
 
     function render(tab){
       listEl.innerHTML = '';
-      tasks[tab].forEach(t => {
+      tasks[tab].forEach(t=>{
         const li = document.createElement("li");
         li.className = "task-card";
         li.innerHTML = `
@@ -200,14 +186,14 @@
           </div>
           <button class="btn-action btn-${t.action}">${t.reward}</button>`;
         li.querySelector(".btn-action")
-          .addEventListener("click", () => alert(\`Executing: \${t.title}\`));
+          .addEventListener("click", () => alert(`Executing: ${t.title}`));
         listEl.appendChild(li);
       });
     }
 
-    tabs.forEach(btn => {
+    tabBtns.forEach(btn => {
       btn.addEventListener("click", () => {
-        tabs.forEach(b=>b.classList.remove("active"));
+        tabBtns.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         render(btn.dataset.tab);
       });
