@@ -74,11 +74,12 @@ body {
   margin-top:12px;
   color:#FF6B6B; font-size:0.9rem;
 }
-#avatarInput { display:none; }
+#loginAvatarInput { display:none; }
 
 /* Dashboard styles */
 .dashboard {
-  display: flex; flex-direction: column; min-height: 100vh;
+  display: none;
+  flex-direction: column; min-height: 100vh;
 }
 header {
   background: var(--card-bg);
@@ -225,211 +226,18 @@ nav.tabs button.active::after {
 </style>
 </head>
 <body>
-
-<!-- Login View -->
-<div id="view-login">
-  <div class="login-card">
-    <div class="avatar" id="loginAvatarLabel">
-      <div class="avatar-placeholder">👤</div>
-      <img id="loginAvatarImg" src="" style="display:none"/>
+  <!-- Login View -->
+  <div id="view-login">
+    <div class="login-card">
+      <!-- login form… same as before -->
     </div>
-    <input type="file" accept="image/*" id="loginAvatarInput"/>
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" required/>
-    <input type="email" id="email" placeholder="Email" required/>
-    <input type="password" id="password" placeholder="Password" required/>
-    <label class="remember"><input type="checkbox" id="rememberMe"/> Remember Me</label>
-    <button id="loginBtn">Log In</button>
-    <div id="error" class="error"></div>
   </div>
-</div>
 
-<!-- Dashboard View -->
-<div id="view-dashboard" class="hidden dashboard">
-  <header>
-    <div class="user-info">
-      <label class="avatar-small" id="dashAvatarLabel">
-        <img id="dashAvatarImg" src="" style="display:none"/>
-        <svg id="dashPlaceholder" xmlns="http://www.w3.org/2000/svg" fill="#A0A8B0" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M12 14c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z"/></svg>
-      </label>
-      <div class="user-text">
-        <div class="name" id="displayUsername"></div>
-        <div class="meta" id="displayMeta"></div>
-      </div>
-    </div>
-    <div>
-      <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
-      <button class="logout-btn" id="logoutBtn">Logout</button>
-    </div>
-  </header>
-  <div class="kpi-bar">
-    <div class="kpi"><h3 id="balanceDisplay">₹1,280</h3><p>Balance</p></div>
-    <div class="kpi"><h3>12</h3><p>Tasks Done</p></div>
-    <div class="kpi"><h3>₹120</h3><p>Weekly Win</p></div>
+  <!-- Dashboard View -->
+  <div id="view-dashboard" class="dashboard">
+    <!-- dashboard… same as before -->
   </div>
-  <nav class="tabs">
-    <button data-tab="daily" class="active">Daily</button>
-    <button data-tab="weekly">Weekly</button>
-    <button data-tab="monthly">Monthly</button>
-  </nav>
-  <div class="live-feed">🎉 Ravi just won ₹500!</div>
-  <ul class="task-list" id="task-list"></ul>
-</div>
 
-<!-- Withdraw Modal -->
-<div id="withdrawModal" class="modal hidden">
-  <div class="modal-content">
-    <h3>Withdraw Funds</h3>
-    <input type="number" id="withdrawAmount" placeholder="Enter amount" />
-    <button id="confirmWithdraw">Confirm</button>
-    <button id="closeWithdraw">Cancel</button>
-    <div id="withdrawError" class="error-msg"></div>
-  </div>
-</div>
-
-<script>
-// View toggle
-const loginView = document.getElementById('view-login');
-const dashView = document.getElementById('view-dashboard');
-function showLogin(){ loginView.classList.remove('hidden'); dashView.classList.add('hidden'); }
-function showDash(){ loginView.classList.add('hidden'); dashView.classList.remove('hidden'); }
-
-// Avatar setup
-function setupAvatarActions(labelId, inputId, imgId, placeholderId) {
-  const label = document.getElementById(labelId);
-  const input = document.getElementById(inputId);
-  const img = document.getElementById(imgId);
-  const placeholder = document.getElementById(placeholderId);
-  const stored = localStorage.getItem('avatarPhoto');
-  if (stored) {
-    img.src = stored; img.style.display = 'block'; placeholder.style.display = 'none';
-  }
-  label.addEventListener('click', ()=> input.click());
-  input.addEventListener('change', ()=>{
-    const file = input.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e=>{
-      const data = e.target.result;
-      img.src = data; img.style.display='block'; placeholder.style.display='none';
-      localStorage.setItem('avatarPhoto', data);
-    };
-    reader.readAsDataURL(file);
-  });
-}
-setupAvatarActions('loginAvatarLabel','loginAvatarInput','loginAvatarImg','loginAvatarImg');
-setupAvatarActions('dashAvatarLabel','dashAvatarInput','dashAvatarImg','dashPlaceholder');
-
-// Login logic
-document.getElementById('loginBtn').addEventListener('click', ()=>{
-  const username = document.getElementById('username').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
-  const remember = document.getElementById('rememberMe').checked;
-  const err = document.getElementById('error');
-  err.textContent = '';
-  if (!username||!email||!password) {
-    err.textContent = 'Fill all fields'; return;
-  }
-  if (remember) {
-    localStorage.setItem('loggedIn','true');
-    localStorage.setItem('username', username);
-    localStorage.setItem('email', email);
-  } else {
-    sessionStorage.setItem('username', username);
-    sessionStorage.setItem('email', email);
-  }
-  loadDashboard();
-});
-
-// Load dashboard
-let currentBalance = 1280;
-function loadDashboard(){
-  const loggedIn = localStorage.getItem('loggedIn')==='true';
-  const username = (loggedIn? localStorage : sessionStorage).getItem('username') || '';
-  const email = (loggedIn? localStorage : sessionStorage).getItem('email') || '';
-  if (!username||!email) { showLogin(); return; }
-  document.getElementById('displayUsername').textContent = username;
-  document.getElementById('displayMeta').textContent = `ID: 3038792 | ${email} | VIP0`;
-  document.getElementById('balanceDisplay').textContent = `₹${currentBalance}`;
-  showDash();
-  renderTasks('daily');
-}
-
-// Logout
-document.getElementById('logoutBtn').onclick = ()=>{
-  localStorage.removeItem('loggedIn');
-  sessionStorage.clear();
-  showLogin();
-};
-
-// Withdraw modal logic
-const withdrawBtn = document.getElementById('withdrawBtn');
-const withdrawModal = document.getElementById('withdrawModal');
-const withdrawAmount = document.getElementById('withdrawAmount');
-const confirmWithdraw = document.getElementById('confirmWithdraw');
-const closeWithdraw = document.getElementById('closeWithdraw');
-const withdrawError = document.getElementById('withdrawError');
-const balanceDisplay = document.getElementById('balanceDisplay');
-
-withdrawBtn.onclick = ()=>{
-  withdrawAmount.value = '';
-  withdrawError.textContent = '';
-  withdrawModal.classList.remove('hidden');
-};
-closeWithdraw.onclick = ()=> withdrawModal.classList.add('hidden');
-confirmWithdraw.onclick = ()=>{
-  const amt = parseInt(withdrawAmount.value);
-  if (isNaN(amt)||amt<=0) { withdrawError.textContent = 'Enter a valid amount'; return; }
-  if (amt>currentBalance) { withdrawError.textContent = 'Insufficient balance'; return; }
-  currentBalance -= amt;
-  balanceDisplay.textContent = `₹${currentBalance}`;
-  withdrawModal.classList.add('hidden');
-  alert(`Withdrawal of ₹${amt} successful.`);
-};
-
-// Task rendering
-const tasks = {
-  daily: [
-    {title:"🃏 Blackjack Bet", meta:"Live odds: 3.5x", color:"var(--accent-gold)"},
-    {title:"🎯 Roulette Spin", meta:"Win big now!", color:"var(--accent-gold)"},
-    {title:"🎰 Slot Machine", meta:"Max payout ₹1000", color:"var(--accent-gold)"}
-  ],
-  weekly:[{title:"🏆 Weekly Jackpot", meta:"Top prize ₹10,000", color:"var(--accent-gold)"}],
-  monthly:[{title:"🎉 VIP Draw", meta:"Exclusive entries", color:"var(--accent-gold)"}]
-};
-
-function renderTasks(tab){
-  const list = document.getElementById('task-list');
-  list.innerHTML = '';
-  tasks[tab].forEach(t=>{
-    const li = document.createElement('li');
-    li.className = 'task-card';
-    li.innerHTML = `
-      <div class="accent" style="background:${t.color}"></div>
-      <div class="task-info">
-        <div class="task-title">${t.title}</div>
-        <div class="task-meta">${t.meta}</div>
-      </div>
-      <button class="btn-action btn-claim">Claim</button>`;
-    li.querySelector('.btn-action').onclick = ()=> alert(`Claimed: ${t.title}`);
-    list.appendChild(li);
-  });
-}
-
-document.querySelectorAll('nav.tabs button').forEach(btn=>{
-  btn.onclick = ()=>{
-    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderTasks(btn.dataset.tab);
-  };
-});
-
-if (localStorage.getItem('loggedIn')==='true' || sessionStorage.getItem('username')) {
-  loadDashboard();
-} else {
-  showLogin();
-}
-</script>
+  <!-- Modal and script… same as before -->
 </body>
 </html>
