@@ -2,70 +2,201 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Casino Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.min.js"></script>
   <style>
     :root {
-      --bg: #121212; --card-bg: #1E2430;
-      --text-primary: #E0E3E8; --text-secondary: #A0A8B0;
-      --accent-gold: #FFD700; --accent-green: #00E5FF; --accent-blue: #4B4EFF;
+      --bg: #121212;
+      --card-bg: #1E2430;
+      --text-primary: #E0E3E8;
+      --text-secondary: #A0A8B0;
+      --accent-gold: #FFD700;
+      --accent-green: #00E5FF;
+      --accent-blue: #4B4EFF;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text-primary); min-height:100vh; }
     .hidden { display:none; }
 
-    .login-card { max-width:320px; margin:40px auto; background:var(--card-bg); padding:24px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.8); text-align:center; }
-    .avatar { width:72px; height:72px; margin:0 auto 16px; background:var(--text-secondary); border-radius:50%; overflow:hidden; cursor:pointer; }
+    /* Login Styles */
+    .login-card {
+      max-width:320px; margin:40px auto;
+      background:var(--card-bg); padding:24px;
+      border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.8);
+      text-align:center;
+    }
+    .avatar {
+      width:72px; height:72px; margin:0 auto 16px;
+      background:var(--text-secondary); border-radius:50%;
+      overflow:hidden; cursor:pointer;
+    }
     .avatar img { width:100%; height:100%; object-fit:cover; }
-    .avatar-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--bg); }
-    .login-card input { width:100%; padding:10px; margin-bottom:12px; border:none; border-radius:6px; background:#121526; color:var(--text-primary); font-size:1rem; }
+    .avatar-placeholder {
+      width:100%; height:100%; display:flex;
+      align-items:center; justify-content:center;
+      font-size:2rem; color:var(--bg);
+    }
+    .login-card input {
+      width:100%; padding:10px; margin-bottom:12px;
+      border:none; border-radius:6px;
+      background:#121526; color:var(--text-primary);
+      font-size:1rem;
+    }
     .login-card input::placeholder { color:#6B7280; }
-    .login-card label.remember { display:flex; align-items:center; margin-bottom:16px; font-size:0.9rem; cursor:pointer; }
-    .login-card label.remember input { margin-right:8px; width:16px; height:16px; }
-    .login-card button { width:100%; padding:12px; background:var(--accent-blue); color:var(--bg); font-weight:600; border:none; border-radius:8px; font-size:1rem; cursor:pointer; transition:background 0.3s; }
+    .login-card label.remember {
+      display:flex; align-items:center; margin-bottom:16px;
+      font-size:0.9rem; cursor:pointer;
+    }
+    .login-card label.remember input {
+      margin-right:8px; width:16px; height:16px;
+    }
+    .login-card button {
+      width:100%; padding:12px;
+      background:var(--accent-blue); color:var(--bg);
+      font-weight:600; border:none; border-radius:8px;
+      cursor:pointer; transition:background 0.3s;
+    }
     .login-card button:hover { background:#3A40D5; }
-    .login-card .error { margin-top:12px; color:#FF6B6B; font-size:0.9rem; }
+    .login-card .error {
+      margin-top:12px; color:#FF6B6B; font-size:0.9rem;
+    }
     #loginAvatarInput { display:none; }
 
-    .dashboard { display:none; flex-direction:column; min-height:100vh; }
-    header { background:var(--card-bg); padding:16px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.8); }
-    .user-info { display:flex; align-items:center; }
-    .avatar-small { width:36px; height:36px; border-radius:50%; overflow:hidden; margin-right:8px; cursor:pointer; background:var(--text-secondary); }
-    .avatar-small img { width:100%; height:100%; object-fit:cover; }
+    /* Dashboard Styles */
+    .dashboard {
+      display:none; flex-direction:column; min-height:100vh;
+    }
+    header {
+      background:var(--card-bg); padding:16px;
+      display:flex; justify-content:space-between; align-items:center;
+      box-shadow:0 2px 8px rgba(0,0,0,0.8);
+    }
+    .user-info {
+      display:flex; align-items:center;
+    }
+    .avatar-small {
+      width:36px; height:36px;
+      background:var(--text-secondary); border-radius:50%;
+      overflow:hidden; margin-right:8px; cursor:pointer;
+    }
+    .avatar-small img {
+      width:100%; height:100%; object-fit:cover;
+    }
     .user-text .name { font-weight:600; }
-    .user-text .meta { font-size:0.8rem; color:var(--text-secondary); }
-    .withdraw-btn { background:var(--accent-gold); border:none; padding:8px 12px; border-radius:6px; color:var(--bg); font-weight:500; cursor:pointer; }
-    .kpi-bar { display:flex; gap:12px; margin:24px 16px; }
-    .kpi { flex:1; background:var(--card-bg); border:1px solid var(--text-secondary); padding:12px; border-radius:8px; text-align:center; }
-    .kpi h3 { color:var(--accent-gold); font-size:1.1rem; margin-bottom:4px; }
-    .kpi p { color:var(--text-secondary); font-size:0.85rem; }
-    nav.tabs { display:flex; background:var(--card-bg); }
-    nav.tabs button { flex:1; padding:12px; background:none; border:none; color:var(--text-secondary); font-weight:600; cursor:pointer; position:relative; }
+    .user-text .meta {
+      font-size:0.8rem; color:var(--text-secondary);
+    }
+    .withdraw-btn {
+      background:var(--accent-gold);
+      border:none; padding:8px 12px;
+      border-radius:6px; color:var(--bg);
+      font-weight:500; cursor:pointer;
+    }
+    .kpi-bar {
+      display:flex; gap:12px; margin:24px 16px;
+    }
+    .kpi {
+      flex:1; background:var(--card-bg);
+      border:1px solid var(--text-secondary);
+      padding:12px; border-radius:8px;
+      text-align:center;
+    }
+    .kpi h3 {
+      color:var(--accent-gold);
+      font-size:1.1rem; margin-bottom:4px;
+    }
+    .kpi p {
+      color:var(--text-secondary);
+      font-size:0.85rem;
+    }
+    nav.tabs {
+      display:flex; background:var(--card-bg);
+    }
+    nav.tabs button {
+      flex:1; padding:12px;
+      background:none; border:none;
+      color:var(--text-secondary);
+      font-weight:600; cursor:pointer;
+      position:relative;
+    }
     nav.tabs button.active { color:var(--text-primary); }
-    nav.tabs button.active::after { content:''; position:absolute; bottom:0; left:20%; right:20%; height:3px; background:var(--accent-gold); border-radius:2px; }
-    .live-feed { margin:8px 16px; font-size:0.85rem; color:var(--accent-green); text-align:center; }
-    .task-list { flex:1; overflow-y:auto; padding:16px; }
-    .task-card { display:flex; align-items:center; justify-content:space-between; background:var(--card-bg); margin-bottom:12px; padding:16px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.8); transition:transform 0.1s; }
+    nav.tabs button.active::after {
+      content:''; position:absolute; bottom:0;
+      left:20%; right:20%; height:3px;
+      background:var(--accent-gold); border-radius:2px;
+    }
+    .live-feed {
+      margin:8px 16px;
+      font-size:0.85rem;
+      color:var(--accent-green);
+      text-align:center;
+    }
+    .task-list {
+      flex:1; overflow-y:auto;
+      padding:16px;
+    }
+    .task-card {
+      display:flex; align-items:center; justify-content:space-between;
+      background:var(--card-bg);
+      margin-bottom:12px; padding:16px;
+      border-radius:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.8);
+      transition:transform 0.1s;
+    }
     .task-card:active { transform:scale(0.97); }
-    .accent { width:6px; height:100%; border-radius:4px; margin-right:12px; }
+    .accent {
+      width:6px; height:100%; border-radius:4px;
+      margin-right:12px;
+    }
     .task-info { flex:1; }
     .task-title { font-size:1rem; font-weight:600; }
-    .task-meta { font-size:0.85rem; color:var(--text-secondary); margin-top:4px; }
-    .btn-claim { padding:10px 20px; background:var(--accent-gold); color:var(--bg); border:none; border-radius:8px; font-weight:600; cursor:pointer; flex-shrink:0; }
-
-    .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:100; }
+    .task-meta {
+      margin-top:4px; font-size:0.85rem;
+      color:var(--text-secondary);
+    }
+    .btn-claim {
+      padding:10px 20px; background:var(--accent-gold);
+      color:var(--bg); border:none;
+      border-radius:8px; font-weight:600;
+      cursor:pointer; flex-shrink:0;
+    }
+    /* Withdraw Modal */
+    .modal {
+      position:fixed; top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.6);
+      display:flex; align-items:center; justify-content:center;
+      z-index:100;
+    }
     .modal.hidden { display:none; }
-    .modal-content { background:var(--card-bg); padding:24px; border-radius:12px; width:90%; max-width:320px; text-align:center; }
-    .modal-content input { width:100%; padding:10px; margin:12px 0; border:none; border-radius:6px; background:#121526; color:var(--text-primary); }
-    .modal-content button { margin:6px; padding:10px 16px; border:none; border-radius:6px; cursor:pointer; }
+    .modal-content {
+      background:var(--card-bg);
+      padding:24px; border-radius:12px;
+      width:90%; max-width:320px;
+      text-align:center;
+    }
+    .modal-content input {
+      width:100%; padding:10px;
+      margin:12px 0; border:none;
+      border-radius:6px;
+      background:#121526;
+      color:var(--text-primary);
+    }
+    .modal-content button {
+      margin:6px; padding:10px 16px;
+      border:none; border-radius:6px;
+      cursor:pointer;
+    }
     #confirmWithdraw { background:var(--accent-green); color:var(--bg); }
     #closeWithdraw { background:var(--accent-blue); color:var(--bg); }
-    .error-msg { margin-top:8px; color:#FF6B6B; font-size:0.9rem; }
+    .error-msg {
+      margin-top:8px; color:#FF6B6B; font-size:0.9rem;
+    }
   </style>
 </head>
 <body>
-  <!-- LOGIN -->
+  <!-- Login View -->
   <div id="view-login">
     <div class="login-card">
       <div class="avatar" id="loginAvatarLabel">
@@ -83,7 +214,7 @@
     </div>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- Dashboard View -->
   <div id="view-dashboard" class="dashboard">
     <header>
       <div class="user-info">
@@ -98,21 +229,24 @@
       </div>
       <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
     </header>
+
     <div class="kpi-bar">
       <div class="kpi"><h3 id="balanceDisplay">₹0</h3><p>Balance</p></div>
       <div class="kpi"><h3>12</h3><p>Tasks Done</p></div>
       <div class="kpi"><h3>₹120</h3><p>Weekly Win</p></div>
     </div>
+
     <nav class="tabs">
       <button data-tab="daily" class="active">Daily</button>
       <button data-tab="weekly">Weekly</button>
       <button data-tab="monthly">Monthly</button>
     </nav>
+
     <div class="live-feed">🎉 Ravi just won ₹500!</div>
     <ul id="task-list" class="task-list"></ul>
   </div>
 
-  <!-- WITHDRAW MODAL -->
+  <!-- Withdraw Modal -->
   <div id="withdrawModal" class="modal hidden">
     <div class="modal-content">
       <h3>Withdraw Funds</h3>
@@ -127,117 +261,165 @@
     const loginDiv = document.getElementById('view-login');
     const dashDiv = document.getElementById('view-dashboard');
 
-    function showLogin(){ console.log("Displaying login screen"); loginDiv.classList.remove('hidden'); dashDiv.classList.add('hidden'); }
-    function showDash(){ console.log("Displaying dashboard"); loginDiv.classList.add('hidden'); dashDiv.classList.remove('hidden'); }
+    function showLogin() {
+      loginDiv.classList.remove('hidden');
+      dashDiv.classList.add('hidden');
+    }
+    function showDash() {
+      loginDiv.classList.add('hidden');
+      dashDiv.classList.remove('hidden');
+    }
 
-    function setupAvatar(lab, inp, img, ph){
-      const l=document.getElementById(lab), i=document.getElementById(inp),
-            im=document.getElementById(img), phl=document.getElementById(ph),
-            stored=localStorage.getItem('avatarPhoto');
-      if(stored){ im.src=stored; im.style.display='block'; phl.style.display='none'; }
-      l.addEventListener('click',()=>i.click());
-      i.addEventListener('change',()=>{
-        const file=i.files[0];
-        if(!file) return;
-        const r=new FileReader();
-        r.onload=e=>{
-          const data=e.target.result;
-          im.src=data; im.style.display='block'; phl.style.display='none';
-          localStorage.setItem('avatarPhoto',data);
+    // Avatar upload setup
+    function setupAvatar(labId, inpId, imgId, phId) {
+      const lab = document.getElementById(labId);
+      const inp = document.getElementById(inpId);
+      const img = document.getElementById(imgId);
+      const ph = document.getElementById(phId);
+      const stored = localStorage.getItem('avatarPhoto');
+      if (stored) {
+        img.src = stored;
+        img.style.display = 'block';
+        ph.style.display = 'none';
+      }
+      lab.addEventListener('click', () => inp.click());
+      inp.addEventListener('change', () => {
+        const file = inp.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+          const data = e.target.result;
+          img.src = data;
+          img.style.display = 'block';
+          ph.style.display = 'none';
+          localStorage.setItem('avatarPhoto', data);
         };
-        r.readAsDataURL(file);
+        reader.readAsDataURL(file);
       });
     }
-    setupAvatar('loginAvatarLabel','loginAvatarInput','loginAvatarImg','loginAvatarImg');
-    setupAvatar('dashAvatarLabel','dashAvatarInput','dashAvatarImg','dashPlaceholder');
+    setupAvatar('loginAvatarLabel', 'loginAvatarInput', 'loginAvatarImg', 'loginAvatarImg');
+    setupAvatar('dashAvatarLabel', 'dashAvatarInput', 'dashAvatarImg', 'dashPlaceholder');
 
     let currentBalance = 1280;
 
-    document.getElementById('loginBtn').onclick = ()=>{
-      console.log("Login button clicked");
-      const u=document.getElementById('username').value.trim();
-      const e=document.getElementById('email').value.trim();
-      const p=document.getElementById('password').value.trim();
-      const rem=document.getElementById('rememberMe').checked;
-      const err=document.getElementById('error');
-      err.textContent='';
-      if(!u||!e||!p){ err.textContent='Fill all fields'; return; }
-      if(rem){
-        localStorage.setItem('loggedIn','true');
-        localStorage.setItem('username',u);
-        localStorage.setItem('email',e);
+    document.getElementById('loginBtn').onclick = () => {
+      const u = document.getElementById('username').value.trim();
+      const e = document.getElementById('email').value.trim();
+      const p = document.getElementById('password').value.trim();
+      const rem = document.getElementById('rememberMe').checked;
+      const err = document.getElementById('error');
+      err.textContent = '';
+      if (!u || !e || !p) {
+        err.textContent = 'Fill all fields';
+        return;
+      }
+      if (rem) {
+        localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('username', u);
+        localStorage.setItem('email', e);
       } else {
-        sessionStorage.setItem('username',u);
-        sessionStorage.setItem('email',e);
+        sessionStorage.setItem('username', u);
+        sessionStorage.setItem('email', e);
       }
       loadDashboard();
     };
 
-    function loadDashboard(){
-      console.log("loadDashboard() running");
-      const logged=localStorage.getItem('loggedIn')==='true';
-      const u=(logged?localStorage:sessionStorage).getItem('username');
-      const em=(logged?localStorage:sessionStorage).getItem('email');
-      if(!u||!em) return showLogin();
-      console.log(`Welcome ${u} (${em})`);
-      document.getElementById('displayUsername').textContent=u;
-      document.getElementById('displayMeta').textContent=`ID: 3038792 | ${em} | VIP0`;
+    function loadDashboard() {
+      const logged = localStorage.getItem('loggedIn') === 'true';
+      const u = (logged ? localStorage : sessionStorage).getItem('username');
+      const em = (logged ? localStorage : sessionStorage).getItem('email');
+      if (!u || !em) {
+        showLogin();
+        return;
+      }
+      document.getElementById('displayUsername').textContent = u;
+      document.getElementById('displayMeta').textContent = `ID: 3038792 | ${em} | VIP0`;
       showDash();
       animateBalance();
       renderTasks('daily');
     }
 
-    function animateBalance(){
-      const anim=new CountUp('balanceDisplay',currentBalance,{duration:2.5,prefix:'₹',useEasing:true,separator:','});
+    function animateBalance() {
+      const anim = new CountUp('balanceDisplay', currentBalance, {
+        duration: 2.5,
+        prefix: '₹',
+        useEasing: true,
+        separator: ','
+      });
       anim.start();
     }
 
-    const wdBtn=document.getElementById('withdrawBtn'), wdModal=document.getElementById('withdrawModal'),
-          wdAmt=document.getElementById('withdrawAmount'), wdError=document.getElementById('withdrawError'),
-          confirmWd=document.getElementById('confirmWithdraw'), closeWd=document.getElementById('closeWithdraw');
+    const wdBtn = document.getElementById('withdrawBtn');
+    const wdModal = document.getElementById('withdrawModal');
+    const wdAmt = document.getElementById('withdrawAmount');
+    const wdError = document.getElementById('withdrawError');
+    const confirmWd = document.getElementById('confirmWithdraw');
+    const closeWd = document.getElementById('closeWithdraw');
 
-    wdBtn.onclick=()=>{
-      wdAmt.value=''; wdError.textContent=''; wdModal.classList.remove('hidden');
+    wdBtn.onclick = () => {
+      wdAmt.value = '';
+      wdError.textContent = '';
+      wdModal.classList.remove('hidden');
     };
-    closeWd.onclick=()=>wdModal.classList.add('hidden');
-    confirmWd.onclick=()=>{
-      const v=parseInt(wdAmt.value);
-      if(!v||v<=0){ wdError.textContent='Invalid amount'; return; }
-      if(v>currentBalance){ wdError.textContent='Insufficient balance'; return; }
-      currentBalance-=v;
+    closeWd.onclick = () => wdModal.classList.add('hidden');
+    confirmWd.onclick = () => {
+      const v = parseInt(wdAmt.value);
+      if (!v || v <= 0) {
+        wdError.textContent = 'Invalid amount';
+        return;
+      }
+      if (v > currentBalance) {
+        wdError.textContent = 'Insufficient balance';
+        return;
+      }
+      currentBalance -= v;
       animateBalance();
       wdModal.classList.add('hidden');
       alert(`Withdrawal of ₹${v} successful`);
     };
 
-    const tasks={
-      daily:[{title:"🃏 Blackjack Bet",meta:"Live odds: 3.5x",color:"var(--accent-gold)"},{title:"🎯 Roulette Spin",meta:"Win big now!",color:"var(--accent-gold)"},{title:"🎰 Slot Machine",meta:"Max payout ₹1000",color:"var(--accent-gold)"}],
-      weekly:[{title:"🏆 Weekly Jackpot",meta:"Top prize ₹10,000",color:"var(--accent-gold)"}],
-      monthly:[{title:"🎉 VIP Draw",meta:"Exclusive entries",color:"var(--accent-gold)"}]
+    const tasks = {
+      daily: [
+        { title: "🃏 Blackjack Bet", meta: "Live odds: 3.5x", color: "var(--accent-gold)" },
+        { title: "🎯 Roulette Spin", meta: "Win big now!", color: "var(--accent-gold)" },
+        { title: "🎰 Slot Machine", meta: "Max payout ₹1000", color: "var(--accent-gold)" }
+      ],
+      weekly: [
+        { title: "🏆 Weekly Jackpot", meta: "Top prize ₹10,000", color: "var(--accent-gold)" }
+      ],
+      monthly: [
+        { title: "🎉 VIP Draw", meta: "Exclusive entries", color: "var(--accent-gold)" }
+      ]
     };
 
-    function renderTasks(tab){
-      const list=document.getElementById('task-list');
-      list.innerHTML='';
-      tasks[tab].forEach(t=>{
-        const li=document.createElement('li');
-        li.className='task-card';
-        li.innerHTML=`<div class="accent" style="background:${t.color}"></div><div class="task-info"><div class="task-title">${t.title}</div><div class="task-meta">${t.meta}</div></div><button class="btn-claim">Claim</button>`;
-        li.querySelector('button').onclick=()=>alert(`Claimed: ${t.title}`);
+    function renderTasks(tab) {
+      const list = document.getElementById('task-list');
+      list.innerHTML = '';
+      tasks[tab].forEach(t => {
+        const li = document.createElement('li');
+        li.className = 'task-card';
+        li.innerHTML = `
+          <div class="accent" style="background:${t.color};"></div>
+          <div class="task-info">
+            <div class="task-title">${t.title}</div>
+            <div class="task-meta">${t.meta}</div>
+          </div>
+          <button class="btn-claim">Claim</button>`;
+        li.querySelector('button').onclick = () => alert(`Claimed: ${t.title}`);
         list.appendChild(li);
       });
     }
 
-    document.querySelectorAll('nav.tabs button').forEach(btn=>{
-      btn.onclick=()=>{
-        document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('nav.tabs button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderTasks(btn.dataset.tab);
       };
     });
 
+    // Initialize: show login or dashboard based on stored state
     loadDashboard();
   </script>
 </body>
-      </html>
-      
+</html>
