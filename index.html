@@ -7,41 +7,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg: #121212;
-  --card-bg: #1E2430;
-  --text-primary: #E0E3E8;
-  --text-secondary: #A0A8B0;
-  --accent-gold: #FFD700;
-  --accent-green: #00E5FF;
-  --accent-blue: #4B4EFF;
+  --bg: #121212; --card-bg: #1E2430;
+  --text-primary: #E0E3E8; --text-secondary: #A0A8B0;
+  --accent-gold: #FFD700; --accent-green: #00E5FF; --accent-blue: #4B4EFF;
 }
 * { margin:0; padding:0; box-sizing:border-box }
 body {
   font-family: 'Inter', sans-serif;
-  color: var(--text-primary);
   background: var(--bg);
+  color: var(--text-primary);
   min-height: 100vh;
 }
-.hidden { display: none; }
+.hidden { display:none; }
 
-/* Login styles */
+/* Login Styles */
 .login-card {
-  max-width: 320px;
-  margin: 40px auto;
-  background: var(--card-bg);
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.8);
-  text-align: center;
+  max-width:320px; margin:40px auto;
+  background: var(--card-bg); padding:24px;
+  border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.8);
+  text-align:center;
 }
 .avatar {
-  width: 72px; height: 72px;
-  margin: 0 auto 16px;
-  border-radius: 50%;
-  background: var(--text-secondary);
-  overflow: hidden; cursor: pointer;
+  width:72px; height:72px; margin:0 auto 16px;
+  border-radius:50%; overflow:hidden;
+  background: var(--text-secondary); cursor:pointer;
 }
-.avatar img { width:100%; height:100%; object-fit: cover; }
 .avatar-placeholder {
   width:100%; height:100%;
   display:flex; align-items:center; justify-content:center;
@@ -50,42 +40,36 @@ body {
 .login-card input {
   width:100%; padding:10px; margin-bottom:12px;
   border:none; border-radius:6px;
-  background:#121526; color: var(--text-primary);
-  font-size:1rem;
+  background:#121526; color: var(--text-primary); font-size:1rem;
 }
 .login-card input::placeholder { color:#6B7280; }
 .login-card label.remember {
   display:flex; align-items:center; margin-bottom:16px;
-  font-size:0.9rem; cursor: pointer;
+  font-size:0.9rem; cursor:pointer;
 }
 .login-card label.remember input {
   margin-right:8px; width:16px; height:16px;
 }
 .login-card button {
   width:100%; padding:12px;
-  background: var(--accent-blue);
-  color: var(--bg);
+  background: var(--accent-blue); color: var(--bg);
   font-weight:600; border:none; border-radius:8px;
-  font-size:1rem; cursor:pointer;
-  transition: background 0.3s;
+  cursor:pointer; transition:background 0.3s;
 }
-.login-card button:hover { background: #3A40D5; }
+.login-card button:hover { background:#3A40D5; }
 .login-card .error {
-  margin-top:12px;
-  color:#FF6B6B; font-size:0.9rem;
+  margin-top:12px; color:#FF6B6B; font-size:0.9rem;
 }
 #loginAvatarInput { display:none; }
 
-/* Dashboard styles */
+/* Dashboard Styles */
 .dashboard {
-  display: none;
-  flex-direction: column; min-height: 100vh;
+  display:none; flex-direction:column; min-height:100vh;
 }
 header {
-  background: var(--card-bg);
-  padding: 16px;
-  display: flex; align-items:center; justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  background: var(--card-bg); padding:16px;
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,0.8);
 }
 .user-info {
   display:flex; align-items:center;
@@ -94,46 +78,28 @@ header {
   width:36px; height:36px; border-radius:50%;
   overflow:hidden; margin-right:8px; cursor:pointer;
 }
-.avatar-small img { width:100%; height:100%; object-fit:cover; }
-.user-text .name {
-  font-weight:600;
-}
+.user-text .name { font-weight:600; }
 .user-text .meta {
   font-size:0.8rem; color:var(--text-secondary);
 }
-.logout-btn {
-  background: var(--accent-green);
-  border:none; color: var(--bg);
-  padding: 8px 12px;
-  border-radius:6px;
-  font-weight:500; cursor: pointer;
-  margin-right: 8px;
-}
 .withdraw-btn {
   background: var(--accent-gold);
-  border: none;
-  color: var(--bg);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-weight:500;
-  cursor:pointer;
+  border:none; color:var(--bg);
+  padding:8px 12px; border-radius:6px;
+  font-weight:500; cursor:pointer;
 }
 .kpi-bar {
-  display:flex; gap:12px;
-  margin:24px 16px;
+  display:flex; gap:12px; margin:24px 16px;
 }
 .kpi {
-  flex:1; background: var(--card-bg);
+  flex:1; background:var(--card-bg);
   border:1px solid var(--text-secondary);
-  padding:12px; border-radius:8px;
-  text-align:center;
+  padding:12px; border-radius:8px; text-align:center;
 }
 .kpi h3 {
   color: var(--accent-gold); font-size:1.1rem; margin-bottom:4px;
 }
-.kpi p {
-  font-size:0.85rem; color:var(--text-secondary);
-}
+.kpi p { color:var(--text-secondary); font-size:0.85rem; }
 nav.tabs {
   display:flex; background: var(--card-bg);
 }
@@ -143,101 +109,287 @@ nav.tabs button {
   color: var(--text-secondary); cursor:pointer;
   position:relative;
 }
-nav.tabs button.active { color: var(--text-primary); }
+nav.tabs button.active {
+  color: var(--text-primary);
+}
 nav.tabs button.active::after {
-  content:''; position:absolute; bottom:0; left:20%; right:20%;
-  height:3px; background: var(--accent-gold); border-radius:2px;
+  content:''; position:absolute; bottom:0;
+  left:20%; right:20%; height:3px;
+  background:var(--accent-gold);
+  border-radius:2px;
 }
 .live-feed {
   margin:8px 16px; font-size:0.85rem;
-  color: var(--accent-green); text-align:center;
+  color: var(--accent-green);
+  text-align:center;
 }
 .task-list {
-  flex:1; overflow-y:auto;
-  padding:16px;
+  flex:1; overflow-y:auto; padding:16px;
 }
 .task-card {
   display:flex; align-items:center; justify-content:space-between;
-  background: var(--card-bg);
+  background:var(--card-bg);
   margin-bottom:12px; padding:16px;
   border-radius:12px;
   box-shadow:0 2px 6px rgba(0,0,0,0.8);
-  transition: transform .1s;
+  transition:transform .1s;
 }
 .task-card:active {
-  transform: scale(0.97);
+  transform:scale(0.97);
 }
 .accent {
-  width:6px; height:100%; border-radius:4px;
-  margin-right:12px;
+  width:6px; height:100%;
+  border-radius:4px; margin-right:12px;
 }
 .task-info { flex:1; }
-.task-title {
-  font-size:1rem; font-weight:600;
-}
+.task-title { font-size:1rem; font-weight:600; }
 .task-meta {
-  font-size:0.85rem;
+  margin-top:4px; font-size:0.85rem;
   color: var(--text-secondary);
-  margin-top:4px;
 }
-.btn-action {
-  padding:10px 20px;
-  font-weight:600;
-  border:none;
-  border-radius:8px;
+.btn-claim {
+  padding:10px 20px; font-weight:600;
+  border:none; border-radius:8px;
   color:var(--bg);
-  cursor:pointer;
-  flex-shrink:0;
+  background: var(--accent-gold);
+  cursor:pointer; flex-shrink:0;
 }
-.btn-claim { background:var(--accent-gold); }
 
 /* Modal */
 .modal {
-  position: fixed;
-  top: 0; left: 0;
+  position:fixed; top:0; left:0;
   width:100%; height:100%;
   background: rgba(0,0,0,0.6);
-  display:flex;
-  align-items:center; justify-content:center;
+  display:flex; align-items:center; justify-content:center;
   z-index:100;
 }
 .modal.hidden { display:none; }
 .modal-content {
-  background: var(--card-bg);
-  padding: 24px; border-radius:12px;
+  background:var(--card-bg);
+  padding:24px; border-radius:12px;
   width:90%; max-width:320px;
   text-align:center;
 }
 .modal-content input {
-  width:100%; padding:10px;
-  margin:12px 0;
+  width:100%; padding:10px; margin:12px 0;
   border:none; border-radius:6px;
-  background:#121526; color: var(--text-primary);
+  background:#121526;
+  color:var(--text-primary);
 }
 .modal-content button {
-  margin:6px;
-  padding:10px 16px;
+  margin:6px; padding:10px 16px;
   border:none; border-radius:6px;
   cursor:pointer;
 }
 #confirmWithdraw { background:var(--accent-green); color:var(--bg); }
 #closeWithdraw { background:var(--accent-blue); color:var(--bg); }
-.error-msg { color:#FF6B6B; font-size:0.9rem; margin-top:8px; }
+.error-msg { margin-top:8px; color:#FF6B6B; font-size:0.9rem; }
 </style>
 </head>
 <body>
-  <!-- Login View -->
-  <div id="view-login">
-    <div class="login-card">
-      <!-- login form… same as before -->
+
+<!-- LOGIN VIEW -->
+<div id="view-login">
+  <div class="login-card">
+    <div class="avatar" id="loginAvatarLabel">
+      <div class="avatar-placeholder">👤</div>
+      <img id="loginAvatarImg" src="" style="display:none"/>
     </div>
+    <input type="file" id="loginAvatarInput" accept="image/*"/>
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required/>
+    <input type="email" id="email" placeholder="Email" required/>
+    <input type="password" id="password" placeholder="Password" required/>
+    <label class="remember">
+      <input type="checkbox" id="rememberMe"/> Remember Me
+    </label>
+    <button id="loginBtn">Log In</button>
+    <div id="error" class="error"></div>
   </div>
+</div>
 
-  <!-- Dashboard View -->
-  <div id="view-dashboard" class="dashboard">
-    <!-- dashboard… same as before -->
+<!-- DASHBOARD VIEW -->
+<div id="view-dashboard" class="dashboard">
+  <header>
+    <div class="user-info">
+      <label class="avatar-small" id="dashAvatarLabel">
+        <img id="dashAvatarImg" src="" style="display:none"/>
+        <svg id="dashPlaceholder" xmlns="http://www.w3.org/2000/svg" fill="#A0A8B0" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M12 14c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z"/></svg>
+      </label>
+      <div class="user-text">
+        <div class="name" id="displayUsername"></div>
+        <div class="meta" id="displayMeta"></div>
+      </div>
+    </div>
+    <button class="withdraw-btn" id="withdrawBtn">Withdraw</button>
+  </header>
+  <div class="kpi-bar">
+    <div class="kpi"><h3 id="balanceDisplay">₹1,280</h3><p>Balance</p></div>
+    <div class="kpi"><h3>12</h3><p>Tasks Done</p></div>
+    <div class="kpi"><h3>₹120</h3><p>Weekly Win</p></div>
   </div>
+  <nav class="tabs">
+    <button data-tab="daily" class="active">Daily</button>
+    <button data-tab="weekly">Weekly</button>
+    <button data-tab="monthly">Monthly</button>
+  </nav>
+  <div class="live-feed">🎉 Ravi just won ₹500!</div>
+  <ul id="task-list" class="task-list"></ul>
+</div>
 
-  <!-- Modal and script… same as before -->
+<!-- WITHDRAWAL MODAL -->
+<div id="withdrawModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Withdraw Funds</h3>
+    <input id="withdrawAmount" type="number" placeholder="Enter amount"/>
+    <button id="confirmWithdraw">Confirm</button>
+    <button id="closeWithdraw">Cancel</button>
+    <div id="withdrawError" class="error-msg"></div>
+  </div>
+</div>
+
+<script>
+// View control
+const loginDiv = document.getElementById('view-login');
+const dashDiv = document.getElementById('view-dashboard');
+function showLogin(){ loginDiv.classList.remove('hidden'); dashDiv.classList.add('hidden'); }
+function showDash(){ loginDiv.classList.add('hidden'); dashDiv.classList.remove('hidden'); }
+
+// Avatar logic
+function setupAvatar(lab, inp, img, ph) {
+  const label = document.getElementById(lab);
+  const input = document.getElementById(inp);
+  const image = document.getElementById(img);
+  const placeholder = document.getElementById(ph);
+  const stored = localStorage.getItem('avatarPhoto');
+  if (stored) {
+    image.src = stored;
+    image.style.display = 'block';
+    placeholder.style.display = 'none';
+  }
+  label.addEventListener('click', ()=> input.click());
+  input.addEventListener('change', ()=>{
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const data = e.target.result;
+      image.src = data;
+      image.style.display = 'block';
+      placeholder.style.display = 'none';
+      localStorage.setItem('avatarPhoto', data);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+setupAvatar('loginAvatarLabel','loginAvatarInput','loginAvatarImg','loginAvatarImg');
+setupAvatar('dashAvatarLabel','dashAvatarInput','dashAvatarImg','dashPlaceholder');
+
+let currentBalance = 1280;
+
+// Login button
+document.getElementById('loginBtn').onclick = ()=>{
+  const u = document.getElementById('username').value.trim();
+  const e = document.getElementById('email').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const rem = document.getElementById('rememberMe').checked;
+  const err = document.getElementById('error');
+  err.textContent = '';
+  if (!u || !e || !p) { err.textContent = 'Fill all fields'; return; }
+  if (rem) {
+    localStorage.setItem('loggedIn','true');
+    localStorage.setItem('username',u);
+    localStorage.setItem('email',e);
+  } else {
+    sessionStorage.setItem('username',u);
+    sessionStorage.setItem('email',e);
+  }
+  loadDashboard();
+};
+
+// Load dashboard and populate user info
+function loadDashboard(){
+  const logged = localStorage.getItem('loggedIn')==='true';
+  const u = (logged?localStorage:sessionStorage).getItem('username');
+  const email = (logged?localStorage:sessionStorage).getItem('email');
+  if (!u || !email) { showLogin(); return; }
+  document.getElementById('displayUsername').textContent = u;
+  document.getElementById('displayMeta').textContent = `ID: 3038792 | ${email} | VIP0`;
+  document.getElementById('balanceDisplay').textContent = `₹${currentBalance}`;
+  showDash();
+  renderTasks('daily');
+}
+
+// Withdrawal
+const wdBtn = document.getElementById('withdrawBtn');
+const wdModal = document.getElementById('withdrawModal');
+const wdAmt = document.getElementById('withdrawAmount');
+const wdError = document.getElementById('withdrawError');
+const confirmWd = document.getElementById('confirmWithdraw');
+const closeWd = document.getElementById('closeWithdraw');
+const balDisplay = document.getElementById('balanceDisplay');
+
+wdBtn.onclick = ()=>{
+  wdAmt.value = '';
+  wdError.textContent = '';
+  wdModal.classList.remove('hidden');
+};
+
+closeWd.onclick = ()=> wdModal.classList.add('hidden');
+
+confirmWd.onclick = ()=>{
+  const v = parseInt(wdAmt.value);
+  if (isNaN(v) || v <= 0) { wdError.textContent = 'Invalid amount'; return; }
+  if (v > currentBalance) { wdError.textContent = 'Insufficient balance'; return; }
+  currentBalance -= v;
+  balDisplay.textContent = `₹${currentBalance}`;
+  wdModal.classList.add('hidden');
+};
+
+// Task runner
+const tasks = {
+  daily: [
+    {title:"🃏 Blackjack Bet",meta:"Live odds: 3.5x",color:"var(--accent-gold)"},
+    {title:"🎯 Roulette Spin",meta:"Win big now!",color:"var(--accent-gold)"},
+    {title:"🎰 Slot Machine",meta:"Max payout ₹1000",color:"var(--accent-gold)"}
+  ],
+  weekly:[{title:"🏆 Weekly Jackpot",meta:"Top prize ₹10,000",color:"var(--accent-gold)"}],
+  monthly:[{title:"🎉 VIP Draw",meta:"Exclusive entries",color:"var(--accent-gold)"}]
+};
+
+function renderTasks(tab){
+  const list = document.getElementById('task-list');
+  list.innerHTML = '';
+  tasks[tab].forEach(t=>{
+    const li = document.createElement('li');
+    li.className = 'task-card';
+    li.innerHTML = `
+      <div class="accent" style="background:${t.color}"></div>
+      <div class="task-info">
+        <div class="task-title">${t.title}</div>
+        <div class="task-meta">${t.meta}</div>
+      </div>
+      <button class="btn-claim">Claim</button>`;
+    li.querySelector('button').onclick = ()=> alert(`Claimed: ${t.title}`);
+    list.appendChild(li);
+  });
+}
+
+// Tab clicks
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTasks(btn.dataset.tab);
+  };
+});
+
+// Initial load
+if (localStorage.getItem('loggedIn') === 'true' || sessionStorage.getItem('username')) {
+  loadDashboard();
+} else {
+  showLogin();
+}
+</script>
 </body>
 </html>
