@@ -360,4 +360,14 @@
     (function(){
       const names = ['Arjun','Asher','Vihaan','luna','Elodie','Devansh','zarin','jhon','Rohan','Aarav','Kabir','robot','Advait','Ishaan','Nico','Krishna','Ritik','Neel','Shaurya','Vivaan','Atharv','Ayaan','Reyansh','Kunal','Darsh','Sahil','Yash','Ansh','Diya','Aanya','Ira','Anika','Meera','Kiara','Saanvi','Riya','cyrus','Tara','Mira','Sara','xander','Anaya','orion','Aadhya','Kavya','Nisha','Jiya','Shreya','Pallavi','Aditi','Lavya','Tanvi','Radhika','Naina','Pooja','Priya','Neha','Sneha','Sanya','Bhavya','Tanya'];
       function ri(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-    
+    const msgs = names.map(n=>`🎉 ${n} withdraws $${(Math.random()<.7?ri(1000,2200):ri(2500,3100))}!`);
+      let i=0;
+      setInterval(()=>{
+        const el = document.querySelector('.live-feed');
+        if(el) el.textContent = msgs[i];
+        i = (i + 1) % msgs.length;
+      },4000);
+    })();
+  </script>
+</body>
+</html>
