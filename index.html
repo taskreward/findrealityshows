@@ -128,7 +128,14 @@
   </div>
 
   <script>
-    let currentTab = 'daily';
+  let currentTab = 'daily';
+
+  // ▶️ Auto-refresh every second so the 30 s global cooldown lifts itself
+  setInterval(() => {
+    renderTasks(currentTab);
+  }, 1000);
+
+  // ...then all your functions: init(), renderTasks(), etc.
     // Persist login across refresh
     function init() {
       if (localStorage.getItem('casinoUser')) showDashboard();
@@ -185,7 +192,6 @@
     }
 
     function renderTasks(tab) {
-      currentTab = tab;
       const list = document.getElementById('task-list');
       list.innerHTML = '';
 
@@ -286,13 +292,12 @@
     });
 
     // Tab switching
-    document.querySelectorAll('.tabs button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderTasks(btn.dataset.tab);
-      };
-    });
+    btn.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTab = btn.dataset.tab;    // ← track which tab is active
+  renderTasks(currentTab);
+};
 
     // Withdraw modal open/close
     const modal = document.getElementById('withdrawModal');
