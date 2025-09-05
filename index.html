@@ -1,218 +1,563 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Casino Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkillMint — Mint your skills. Grow your future.</title>
+  <meta name="description" content="SkillMint: Learn in-demand skills and track progress in a clean, modern dashboard. Single-file site for GitHub Pages." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Your existing CSS unchanged */
-    :root { --bg:#121212;--card-bg:#1E2430;--text-primary:#E0E3E8;--text-secondary:#A0A8B0;--accent-gold:#FFD700;--accent-green:#00E5FF;--accent-blue:#4B4EFF }
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh}
+    :root{
+      --mint:#3EB489; /* primary */
+      --teal:#2CA58D; /* dark accent */
+      --leaf:#7FD1AE; /* light accent */
+      --ink:#0F172A;  /* near black */
+      --text:#111827;
+      --muted:#6B7280;
+      --bg:#F7FAF9;   /* soft gray/green */
+      --card:#FFFFFF;
+      --ring: rgba(62,180,137,.4);
+      --warn:#F97316;
+      --rose:#EF4444;
+    }
+    [data-theme="dark"]{
+      --bg:#0B1210;
+      --card:#0F1A17;
+      --text:#E5E7EB;
+      --muted:#9CA3AF;
+      --ink:#E5E7EB;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; color:var(--text); background:var(--bg); line-height:1.6;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    /* Layout */
+    .container{max-width:1100px; margin:auto; padding:0 20px}
+    header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(180%) blur(6px); background:color-mix(in hsl, var(--bg) 65%, transparent)}
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800}
+    .brand svg{width:34px; height:34px}
+    .brand .wordmark{font-size:20px; letter-spacing:.3px}
+    .nav a{padding:8px 12px; border-radius:10px}
+    .nav a:hover{background:rgba(0,0,0,.05)}
+    .nav .cta{background:var(--mint); color:white; box-shadow:0 6px 18px rgba(62,180,137,.25)}
+    .nav .cta:hover{transform:translateY(-1px)}
+
+    /* Hero */
+    .hero{padding:64px 0 40px}
+    .hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:28px; align-items:center}
+    .title{font-size:44px; line-height:1.1; margin:0 0 14px}
+    .subtitle{font-size:18px; color:var(--muted); margin:0 0 22px}
+    .actions{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:14px; font-weight:600; border:1px solid transparent; cursor:pointer}
+    .btn.primary{background:var(--mint); color:#fff}
+    .btn.secondary{background:transparent; border-color:color-mix(in srgb, var(--muted) 24%, transparent); color:var(--text)}
+    .pill{display:inline-flex; align-items:center; gap:8px; font-size:12px; padding:8px 12px; border-radius:999px; background:#E7F8F1; color:#056449; border:1px solid #c9efdF}
+    [data-theme="dark"] .pill{background:#0A2C23; border-color:#0E3A2F; color:#BFEAD8}
+
+    /* Sections */
+    section{padding:46px 0}
+    .section-title{font-weight:800; font-size:28px; margin:0 0 20px}
+    .muted{color:var(--muted)}
+
+    /* Cards */
+    .grid{display:grid; gap:18px}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    .cols-4{grid-template-columns:repeat(4,1fr)}
+    .cols-2{grid-template-columns:repeat(2,1fr)}
+    @media (max-width:980px){ .hero-grid{grid-template-columns:1fr} .cols-4,.cols-3{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:640px){ .cols-4,.cols-3,.cols-2{grid-template-columns:1fr} .title{font-size:36px} }
+    .card{background:var(--card); border:1px solid color-mix(in srgb, var(--muted) 12%, transparent); border-radius:18px; padding:18px; box-shadow:0 4px 14px rgba(0,0,0,.04)}
+    .card h4{margin:10px 0 6px}
+    .badge{display:inline-block; font-size:12px; padding:6px 10px; background:#ECFDF5; color:#065F46; border-radius:999px; border:1px solid #BAE6D3}
+    [data-theme="dark"] .badge{background:#0B2A22; border-color:#0E3A2F; color:#C7F0E1}
+
+    /* Pricing */
+    .price{font-size:32px; font-weight:800}
+    .price small{font-weight:600; font-size:14px; color:var(--muted)}
+    ul.clean{list-style:none; padding:0; margin:12px 0}
+    ul.clean li{display:flex; gap:10px; align-items:flex-start; margin:8px 0}
+    ul.clean svg{flex:0 0 18px; margin-top:2px}
+
+    /* Footer */
+    footer{padding:26px 0 60px; color:var(--muted)}
+
+    /* Tabs/Dashboard */
+    .tabs{display:flex; gap:8px; border-bottom:1px solid color-mix(in srgb, var(--muted) 16%, transparent); margin-bottom:16px}
+    .tab{padding:10px 14px; cursor:pointer; border-radius:10px 10px 0 0}
+    .tab.active{background:var(--card); border:1px solid color-mix(in srgb, var(--muted) 16%, transparent); border-bottom-color:transparent}
     .hidden{display:none !important}
-    /* ... rest of your CSS ... */
+    .progress{height:10px; background:color-mix(in srgb, var(--muted) 18%, transparent); border-radius:999px; overflow:hidden}
+    .progress > span{display:block; height:100%; background:linear-gradient(90deg,var(--mint),var(--leaf)); width:0%}
+
+    /* Toast */
+    .toast{position:fixed; right:16px; bottom:16px; background:var(--ink); color:white; padding:12px 16px; border-radius:12px; opacity:0; transform:translateY(10px); transition:.2s}
+    .toast.show{opacity:1; transform:translateY(0)}
+
+    /* Theme Switch */
+    .switch{display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:14px}
+    .switch input{appearance:none; width:42px; height:24px; border-radius:999px; background:color-mix(in srgb, var(--muted) 24%, transparent); position:relative; outline:none}
+    .switch input:after{content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.3)}
+    .switch input:checked{background:var(--mint)}
+    .switch input:checked:after{left:21px}
+
+    /* Utility */
+    .center{text-align:center}
+    .row{display:flex; gap:10px; align-items:center}
+    .space{height:18px}
+    .kbd{border:1px solid color-mix(in srgb, var(--muted) 24%, transparent); border-bottom-width:3px; border-radius:8px; padding:2px 6px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px}
   </style>
 </head>
 <body>
-  <!-- LOGIN -->
-  <div id="loginPage" class="login-container">
-    <div class="login-box">
-      <h2 style="text-align:center;margin-bottom:16px;">Login</h2>
-      <input type="text" id="loginUsername" placeholder="Username" />
-      <input type="email" id="loginEmail" placeholder="Email" />
-      <input type="password" id="loginPassword" placeholder="Password" />
-      <button onclick="loginUser()">Login</button>
-    </div>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div id="dashboardPage" class="dashboard hidden">
-    <header>
-      <div class="user-info">
-        <label class="avatar-small">
-          <input type="file" id="avatarUpload" accept="image/*" style="display:none" />
-          <img id="userAvatar" src="" alt="User avatar" />
+  <!-- ========== Header ========== -->
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home" onclick="route('home')" aria-label="SkillMint home">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="4" y="12" width="56" height="40" rx="12" fill="url(#g)"/>
+          <path d="M16 38c6-5 10-8 16-8s10 3 16 8" stroke="white" stroke-width="4" stroke-linecap="round"/>
+          <path d="M22 24l6 10 14-18" stroke="white" stroke-width="4" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="g" x1="4" y1="12" x2="60" y2="52" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#3EB489"/>
+              <stop offset="1" stop-color="#2CA58D"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="wordmark">SkillMint</span>
+      </a>
+      <nav class="row">
+        <a href="#courses" onclick="route('home','#courses')">Courses</a>
+        <a href="#pricing" onclick="route('home','#pricing')">Pricing</a>
+        <a href="#faq" onclick="route('home','#faq')">FAQ</a>
+        <label class="switch" title="Toggle dark mode">
+          <input id="themeToggle" type="checkbox" />
+          <span>Dark</span>
         </label>
-        <div class="user-text">
-          <div class="name" id="displayUsername"></div>
-          <div class="meta" id="displayMeta"></div>
-        </div>
-      </div>
-      <button class="withdraw-btn">Withdraw</button>
-    </header>
-    <div class="kpi-bar">
-      <div class="kpi"><h3 id="balanceDisplay">$0</h3><p>Balance</p></div>
-      <div class="kpi"><h3 id="kpiTasks">0</h3><p>Tasks Done</p></div>
-      <div class="kpi"><h3 id="kpiWeekly">$0</h3><p>Weekly Win</p></div>
+        <a class="cta" href="#dashboard" onclick="route('dashboard')">Open Dashboard</a>
+      </nav>
     </div>
-    <nav class="tabs">
-      <button data-tab="daily" class="active">Daily Tasks</button>
-      <button data-tab="weekly">Mission Bonus</button>
-      <button data-tab="instructions">Instructions</button>
-    </nav>
-    <div class="live-feed">🎉 kali just withdraws $1000!</div>
-    <ul id="task-list" class="task-list"></ul>
-  </div>
+  </header>
 
-  <!-- WITHDRAW MODAL -->
-  <div id="withdrawModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Withdraw Funds</h2>
-      <div class="modal-body">
-        <div class="option-group">
-          <input type="radio" name="withdrawType" id="typeBank" value="bank" checked><label for="typeBank">Bank Transfer</label>
-          <input type="radio" name="withdrawType" id="typePaypal" value="paypal"><label for="typePaypal">PayPal</label>
+  <!-- ========== HOME ========== -->
+  <main id="home">
+    <section class="hero container">
+      <div class="hero-grid">
+        <div>
+          <span class="pill">Mint your skills • Earn from your craft</span>
+          <h1 class="title">Learn faster. Track progress. <br/>Show skills you’re proud of.</h1>
+          <p class="subtitle">SkillMint is a clean, distraction‑free learning space. Enroll in in‑demand courses, keep a streak, and grow a portfolio that actually proves what you can do.</p>
+          <div class="actions">
+            <a class="btn primary" href="#courses" onclick="route('home','#courses')">Explore Courses</a>
+            <a class="btn secondary" href="#dashboard" onclick="route('dashboard')">Go to Dashboard</a>
+          </div>
+          <div class="space"></div>
+          <div class="row muted" style="gap:18px">
+            <span class="row"> <span class="kbd">Ctrl</span> + <span class="kbd">K</span> Quick‑search</span>
+            <span class="row"> <span class="kbd">G</span> then <span class="kbd">D</span> → Dashboard</span>
+          </div>
         </div>
-        <input type="number" id="withdrawAmount" placeholder="Amount" min="1000"/>
-        <div id="bankFields">
-          <input type="text" id="accName" placeholder="Account Holder Name"/>
-          <input type="text" id="accNumber" placeholder="Account Number"/>
-          <input type="text" id="ifsc" placeholder="IFSC Code"/>
+        <div class="card" aria-hidden="true">
+          <img alt="Course preview" src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='640' height='420'><rect width='100%' height='100%' rx='18' fill='%23ffffff'/><rect x='28' y='24' width='160' height='20' rx='10' fill='%233EB489' opacity='.2'/><rect x='28' y='60' width='584' height='140' rx='14' fill='%233EB489' opacity='.11'/><rect x='28' y='220' width='180' height='140' rx='14' fill='%232CA58D' opacity='.12'/><rect x='222' y='220' width='180' height='140' rx='14' fill='%233EB489' opacity='.12'/><rect x='416' y='220' width='196' height='140' rx='14' fill='%232CA58D' opacity='.12'/><circle cx='560' cy='48' r='10' fill='%233EB489'/><circle cx='584' cy='48' r='10' fill='%232CA58D'/></svg>"/>
         </div>
-        <div id="paypalFields" class="hidden">
-          <input type="email" id="paypalEmail" placeholder="PayPal Email"/>
-        </div>
-        <div id="withdrawError" class="withdraw-error">Minimum withdrawal is $1,000</div>
-        <button id="withdrawSubmit">Withdraw</button>
       </div>
-    </div>
-  </div>
+    </section>
+
+    <section class="container">
+      <h2 class="section-title">Why SkillMint?</h2>
+      <div class="grid cols-3">
+        <div class="card">
+          <span class="badge">Project‑first learning</span>
+          <h4>Build proof, not just watch videos</h4>
+          <p class="muted">Every course ships with bite‑size projects. Ship weekly, add to your portfolio, and share a public link you control.</p>
+        </div>
+        <div class="card">
+          <span class="badge">Clean dashboard</span>
+          <h4>Progress that actually motivates</h4>
+          <p class="muted">Streaks, milestones, and gentle nudges—no noisy spam. You set the pace, SkillMint keeps you honest.</p>
+        </div>
+        <div class="card">
+          <span class="badge">Honest outcomes</span>
+          <h4>Learn → Practice → Earn</h4>
+          <p class="muted">Use your new skills for freelance, internships, or jobs. Optional referral program is available but never required.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="courses" class="container">
+      <h2 class="section-title">Popular Courses</h2>
+      <div class="grid cols-3" id="courseGrid"></div>
+    </section>
+
+    <section id="pricing" class="container">
+      <h2 class="section-title">Simple Pricing</h2>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3>Starter</h3>
+          <p class="price">₹999 <small>one‑time</small></p>
+          <ul class="clean">
+            <li>✔ Access to 1 course</li>
+            <li>✔ Projects & templates</li>
+            <li>✔ Community access</li>
+          </ul>
+          <button class="btn primary" onclick="purchase('Starter')">Choose Starter</button>
+        </div>
+        <div class="card" style="border-color:var(--mint); box-shadow:0 12px 28px rgba(62,180,137,.18)">
+          <span class="badge">Most Popular</span>
+          <h3>Pro</h3>
+          <p class="price">₹2,999 <small>one‑time</small></p>
+          <ul class="clean">
+            <li>✔ All current courses</li>
+            <li>✔ Certificate projects</li>
+            <li>✔ Private mentor sessions</li>
+          </ul>
+          <button class="btn primary" onclick="purchase('Pro')">Choose Pro</button>
+        </div>
+        <div class="card">
+          <h3>Team</h3>
+          <p class="price">₹8,999 <small>3 seats</small></p>
+          <ul class="clean">
+            <li>✔ Team dashboard</li>
+            <li>✔ Progress export</li>
+            <li>✔ Priority support</li>
+          </ul>
+          <button class="btn primary" onclick="purchase('Team')">Choose Team</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="container">
+      <h2 class="section-title">FAQ</h2>
+      <div class="grid cols-2">
+        <div class="card"><h4>How do I earn?</h4><p class="muted">Primarily by using your new skills for freelance or jobs. A simple, optional referral program exists for sharing SkillMint—earn a small commission when friends enroll. No multi‑level structures.</p></div>
+        <div class="card"><h4>Do you issue certificates?</h4><p class="muted">Yes—every course includes projects and an optional final assessment. Pass it to unlock a shareable certificate link.</p></div>
+        <div class="card"><h4>Is my data safe?</h4><p class="muted">We store only what’s needed for your learning progress. You can export or delete your data at any time from the dashboard.</p></div>
+        <div class="card"><h4>Refund policy?</h4><p class="muted">14‑day no‑questions refund on Starter/Pro if you haven’t finished more than 20% of any course.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== DASHBOARD (SPA view) ========== -->
+  <main id="dashboard" class="hidden">
+    <section class="container">
+      <h2 class="section-title">Dashboard</h2>
+      <div class="tabs">
+        <div class="tab active" data-tab="overview" onclick="switchTab('overview')">Overview</div>
+        <div class="tab" data-tab="courses" onclick="switchTab('courses')">My Courses</div>
+        <div class="tab" data-tab="earn" onclick="switchTab('earn')">Earnings</div>
+        <div class="tab" data-tab="profile" onclick="switchTab('profile')">Profile</div>
+      </div>
+
+      <!-- Overview -->
+      <div class="grid cols-3" id="tab-overview">
+        <div class="card">
+          <h4>Welcome back, <span id="helloName">Learner</span> 👋</h4>
+          <p class="muted">Keep your streak alive. A 20‑minute session today is enough to make progress.</p>
+          <div class="progress"><span id="streakBar" style="width:0%"></span></div>
+          <small class="muted">Monthly streak progress</small>
+        </div>
+        <div class="card">
+          <h4>Quick stats</h4>
+          <ul class="clean">
+            <li>• Courses enrolled: <b id="statCourses">0</b></li>
+            <li>• Certificates: <b id="statCerts">0</b></li>
+            <li>• Referral earnings: <b id="statEarn">₹0</b></li>
+          </ul>
+          <button class="btn secondary" onclick="switchTab('earn')">View earnings</button>
+        </div>
+        <div class="card">
+          <h4>Continue learning</h4>
+          <div id="continueList" class="muted">No active courses yet. Enroll from the home page.</div>
+        </div>
+      </div>
+
+      <!-- My Courses -->
+      <div id="tab-courses" class="hidden">
+        <div class="grid cols-3" id="myCourses"></div>
+      </div>
+
+      <!-- Earnings -->
+      <div id="tab-earn" class="hidden">
+        <div class="grid cols-2">
+          <div class="card">
+            <h4>Your referral link</h4>
+            <p class="muted">Share with friends. When they enroll, you earn a flat commission (configurable in code).</p>
+            <div class="row"><input id="refLink" style="width:100%; padding:10px 12px; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted) 24%, transparent)" readonly>
+              <button class="btn secondary" onclick="copyRef()">Copy</button></div>
+            <small class="muted">Tips: add <span class="kbd">?ref=yourname</span> to any SkillMint URL.</small>
+          </div>
+          <div class="card">
+            <h4>Commission calculator</h4>
+            <div class="row">
+              <label for="calcCount">Enrollments</label>
+              <input id="calcCount" type="number" value="5" min="0" style="margin-left:8px; width:120px; padding:10px 12px; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted) 24%, transparent)">
+              <button class="btn primary" onclick="calc()">Estimate</button>
+            </div>
+            <p id="calcOut" class="price">₹0</p>
+            <small class="muted">Change the <b>COMMISSION</b> value in the script to match your policy.</small>
+          </div>
+          <div class="card">
+            <h4>Payouts</h4>
+            <p class="muted">Track total confirmed earnings. For demo purposes this stores values in your browser only.</p>
+            <ul class="clean">
+              <li>• Lifetime earnings: <b id="lifeEarn">₹0</b></li>
+              <li>• Pending: <b id="pendingEarn">₹0</b></li>
+            </ul>
+            <button class="btn secondary" onclick="requestPayout()">Request payout</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile -->
+      <div id="tab-profile" class="hidden">
+        <div class="grid cols-2">
+          <div class="card">
+            <h4>Profile</h4>
+            <div class="row" style="gap:12px">
+              <input id="nameInput" placeholder="Your display name" style="flex:1; padding:10px 12px; border-radius:12px; border:1px solid color-mix(in srgb, var(--muted) 24%, transparent)">
+              <button class="btn primary" onclick="saveName()">Save</button>
+            </div>
+            <div class="space"></div>
+            <label class="row" style="gap:10px"><input type="checkbox" id="publicProfile"> Public profile</label>
+          </div>
+          <div class="card">
+            <h4>Data control</h4>
+            <p class="muted">Export or reset your local data. This demo uses <code>localStorage</code> only.</p>
+            <div class="row">
+              <button class="btn secondary" onclick="exportData()">Export JSON</button>
+              <button class="btn" style="background:#FEE2E2; border-color:#FECACA" onclick="resetAll()">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container center">
+    <div>© <span id="year"></span> SkillMint • Built with ♥ in HTML, CSS & JS</div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script>
-    // 🔧 Track active tab for rendering
-    let currentTab = 'daily';
+    // ------------------------------
+    // Config (adjust these values)
+    // ------------------------------
+    const COMMISSION = 300;        // ₹ per successful referral (example)
+    const COURSES = [
+      { id:'ds',   title:'Data Science Foundations', level:'Beginner', hours:18, color:'#2CA58D', tags:['Python','NumPy','Pandas'], price:999 },
+      { id:'ml',   title:'Machine Learning Sprint', level:'Intermediate', hours:22, color:'#3EB489', tags:['Scikit‑learn','Metrics','Pipeline'], price:1499 },
+      { id:'dm',   title:'Digital Marketing Essentials', level:'Beginner', hours:14, color:'#67C8A3', tags:['SEO','Ads','Analytics'], price:899 },
+      { id:'uiux', title:'UI/UX for Developers', level:'All levels', hours:10, color:'#5CC9B1', tags:['Figma','Wireframes','Design‑systems'], price:1199 },
+      { id:'wd',   title:'Full‑Stack Web Bootcamp', level:'Intermediate', hours:30, color:'#239D84', tags:['HTML/CSS','Node','DB'], price:1999 },
+      { id:'fin',  title:'Finance for Builders', level:'Beginner', hours:8, color:'#4EBE9E', tags:['Budget','Pricing','Taxes'], price:699 }
+    ];
 
-    // 🔧 Auto-refresh every second to clear global cooldown
-    setInterval(() => {
-      renderTasks(currentTab);
-    }, 1000);
+    // ------------------------------
+    // Helpers
+    // ------------------------------
+    const $  = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); };
 
-    // Persist login across refresh
-    function init() {
-      if (localStorage.getItem('casinoUser')) showDashboard();
+    // ------------------------------
+    // Theme toggle
+    // ------------------------------
+    const themeToggle = $('#themeToggle');
+    const savedTheme = localStorage.getItem('skillmint:theme') || 'light';
+    if(savedTheme==='dark'){ document.documentElement.setAttribute('data-theme','dark'); themeToggle.checked = true; }
+    themeToggle.addEventListener('change', ()=>{
+      const mode = themeToggle.checked ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', mode === 'dark' ? 'dark' : '');
+      localStorage.setItem('skillmint:theme', mode);
+    });
+
+    // ------------------------------
+    // Routing (simple SPA switching)
+    // ------------------------------
+    function route(view, anchor){
+      const isDash = view === 'dashboard' || location.hash === '#dashboard';
+      $('#home').classList.toggle('hidden', isDash);
+      $('#dashboard').classList.toggle('hidden', !isDash);
+      if(isDash){ buildDashboard(); } else if(anchor){
+        requestAnimationFrame(()=>document.querySelector(anchor)?.scrollIntoView({behavior:'smooth'}));
+      }
+      history.replaceState({}, '', isDash ? '#dashboard' : '#home');
+    }
+    window.addEventListener('hashchange', ()=> route(location.hash === '#dashboard' ? 'dashboard':'home'));
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e)=>{
+      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); $('#courses').scrollIntoView({behavior:'smooth'}); }
+      if(e.key.toLowerCase()==='g'){ window._gPressed=true; setTimeout(()=>window._gPressed=false, 650); }
+      if(window._gPressed && e.key.toLowerCase()==='d'){ route('dashboard'); }
+    });
+
+    // ------------------------------
+    // Course grid render
+    // ------------------------------
+    function renderCourses(){
+      const grid = $('#courseGrid');
+      grid.innerHTML = '';
+      COURSES.forEach(c=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div style="height:8px; background:${c.color}; border-radius:8px; margin:-8px -8px 10px"></div>
+          <span class="badge">${c.level} • ${c.hours}h</span>
+          <h4>${c.title}</h4>
+          <p class="muted">${c.tags.join(' • ')}</p>
+          <div class="row" style="justify-content:space-between">
+            <b>₹${c.price}</b>
+            <div class="row" style="gap:8px">
+              <button class="btn secondary" onclick="preview('${c.id}')">Preview</button>
+              <button class="btn primary" onclick="enroll('${c.id}')">Enroll</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      })
     }
 
-    // Tasks array (unchanged)
-    const tasks = {
-      daily: [
-        { key:'daily_task_0', title:'🎲 Task 1', meta:'Earn $3', reward:3, color:'var(--accent-gold)', url:'https://gplinks.co/u8YjR' },
-        // ... other tasks ...
-      ],
-      weekly: [
-        { key:'weekly_task_0', title:'🏆 Mission 1', meta:'Earn $4', reward:5, color:'var(--accent-blue)', url:'https://gplinks.co/aG4wyN' }
-        // ... other weekly missions ...
-      ],
-      monthly: []
+    function preview(id){
+      const c = COURSES.find(x=>x.id===id);
+      alert(`${c.title}\n\nWhat you'll build:\n• Mini‑project each module\n• Portfolio artifact at the end`);
+    }
+
+    // ------------------------------
+    // Enrollment & local state
+    // ------------------------------
+    const store = {
+      get(){ try{ return JSON.parse(localStorage.getItem('skillmint:data')||'{}'); }catch(e){ return {}; } },
+      set(v){ localStorage.setItem('skillmint:data', JSON.stringify(v)); }
     };
 
-    let lastClaimTime = parseInt(localStorage.getItem('lastClaimTime') || '0', 10);
-    function persistClaimTime(ts) {
-      lastClaimTime = ts;
-      localStorage.setItem('lastClaimTime', ts.toString());
+    function enroll(id){
+      const data = store.get();
+      data.courses = data.courses || {};
+      if(data.courses[id]){ toast('Already enrolled'); return; }
+      data.courses[id] = { progress: 0, started: Date.now() };
+      store.set(data);
+      toast('Enrolled! Open Dashboard → My Courses');
+      updateStats();
     }
 
-    function loginUser() {
-      const name = document.getElementById('loginUsername').value.trim();
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value.trim();
-      if (!name || !email || !pass) return alert('Fill all fields');
-      const user = { name, email, id: Date.now(), vip: 0 };
-      const data = { user, balance: 0, tasksDone: 0, weeklyWin: 0, claimed: {}, processing: {} };
-      localStorage.setItem('casinoUser', JSON.stringify(data));
-      showDashboard();
+    // ------------------------------
+    // Dashboard logic
+    // ------------------------------
+    function switchTab(name){
+      $$('.tab').forEach(t=> t.classList.toggle('active', t.dataset.tab===name));
+      ['overview','courses','earn','profile'].forEach(id=> $('#tab-'+id).classList.toggle('hidden', id!==name));
     }
 
-    function showDashboard() {
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      document.getElementById('displayUsername').textContent = s.user.name;
-      document.getElementById('displayMeta').textContent = `ID: ${s.user.id} | ${s.user.email} | VIP${s.user.vip}`;
-      if (s.avatar) document.getElementById('userAvatar').src = s.avatar;
-      updateKPI();
-      renderTasks(currentTab);
-    }
+    function buildDashboard(){
+      const data = store.get();
+      // name
+      const name = data.name || 'Learner';
+      $('#helloName').textContent = name;
+      $('#nameInput').value = data.name || '';
+      $('#publicProfile').checked = !!data.public;
 
-    function updateKPI() {
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      document.getElementById('balanceDisplay').textContent = `$${s.balance}`;
-      document.getElementById('kpiTasks').textContent = s.tasksDone;
-      document.getElementById('kpiWeekly').textContent = `$${s.weeklyWin}`;
-    }
+      // streak (basic demo: percent of any activity days in last 30)
+      const days = (data.activity||[]).filter(d=> Date.now()-d < 1000*60*60*24*30).length;
+      $('#streakBar').style.width = Math.min(100, Math.round(days/20*100))+'%';
 
-    function renderTasks(tab) {
-      const list = document.getElementById('task-list');
-      list.innerHTML = '';
-      const s = JSON.parse(localStorage.getItem('casinoUser'));
-      const now = Date.now();
+      // stats
+      const my = Object.entries(data.courses||{});
+      $('#statCourses').textContent = my.length;
+      $('#statCerts').textContent   = my.filter(([,v])=> v.progress>=100).length;
+      const earn = data.earn||{life:0,pending:0};
+      $('#statEarn').textContent = '₹'+(earn.life||0);
 
-      if (tab === 'instructions') {
-        // your instructions rendering logic
-        list.innerHTML = `<div class="task-card">...instructions...</div>`;
-        return;
-      }
+      // continue list
+      const cont = my.filter(([,v])=> v.progress>0 && v.progress<100)
+                     .slice(0,3)
+                     .map(([k,v])=>`• ${COURSES.find(c=>c.id===k)?.title} – ${v.progress}%`);
+      $('#continueList').innerHTML = cont.length? cont.join('<br>') : 'No active courses yet.';
 
-      tasks[tab].forEach(t => {
-        const li = document.createElement('li');
-        li.className = 'task-card';
-        const lastC = s.claimed[t.key] || 0;
-        const isTaskCD = now - lastC < 24*60*60*1000;
-        const isGlobalCD = now - lastClaimTime < 30*1000;
-        const isProc = s.processing?.[t.key] && now - s.processing[t.key] < 3*60*1000;
-
-        const btn = document.createElement('button');
-        btn.className = 'btn-claim';
-        btn.textContent = isProc ? 'Processing...' : 'Claim';
-        btn.disabled = isTaskCD || isProc || isGlobalCD;
-
-        btn.onclick = () => {
-          if (btn.disabled) return;
-          persistClaimTime(Date.now());
-          window.open(t.url, '_blank');
-          s.processing = s.processing || {};
-          s.processing[t.key] = Date.now();
-          localStorage.setItem('casinoUser', JSON.stringify(s));
-          renderTasks(tab);
-
-          setTimeout(() => {
-            const u = JSON.parse(localStorage.getItem('casinoUser'));
-            u.balance += t.reward;
-            u.tasksDone++;
-            u.weeklyWin += t.reward;
-            u.claimed[t.key] = Date.now();
-            delete u.processing[t.key];
-            localStorage.setItem('casinoUser', JSON.stringify(u));
-            updateKPI();
-            renderTasks(currentTab);
-          }, 3 * 60 * 1000);
-        };
-
-        li.innerHTML = `
-          <div class="accent" style="background:${t.color}"></div>
-          <div class="task-info"><div class="task-title">${t.title}</div><div class="task-meta">${t.meta}</div></div>
-        `;
-        li.appendChild(btn);
-        list.appendChild(li);
+      // my courses render
+      const wrap = $('#myCourses');
+      wrap.innerHTML = '';
+      (my.length? my : []).forEach(([id,v])=>{
+        const c = COURSES.find(x=>x.id===id);
+        const el = document.createElement('div');
+        el.className='card';
+        el.innerHTML = `
+          <div class="row" style="justify-content:space-between">
+            <div>
+              <span class="badge">${c.level}</span>
+              <h4 style="margin:6px 0 6px">${c.title}</h4>
+              <div class="progress"><span style="width:${v.progress}%"></span></div>
+              <small class="muted">${v.progress}% complete</small>
+            </div>
+            <div class="row" style="gap:8px">
+              <button class="btn secondary" onclick="advance('${id}')">+10%</button>
+              <button class="btn" style="background:#ECFDF5; border-color:#BAE6D3" onclick="markCert('${id}')">Certify</button>
+            </div>
+          </div>`;
+        wrap.appendChild(el);
       });
+
+      // referral link
+      const handle = (data.name||'learner').toLowerCase().replace(/\s+/g,'');
+      $('#refLink').value = location.href.replace('#dashboard','') + `?ref=${handle}`;
+
+      // earnings summary
+      $('#lifeEarn').textContent    = '₹'+(earn.life||0);
+      $('#pendingEarn').textContent = '₹'+(earn.pending||0);
     }
 
-    // Update currentTab on tab clicks
-    document.querySelectorAll('.tabs button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentTab = btn.dataset.tab;
-        renderTasks(currentTab);
-      };
-    });
+    function advance(id){
+      const data = store.get();
+      if(!data.courses?.[id]) return;
+      data.courses[id].progress = Math.min(100, (data.courses[id].progress||0)+10);
+      data.activity = [...(data.activity||[]), Date.now()];
+      store.set(data); buildDashboard();
+    }
+    function markCert(id){
+      const data = store.get();
+      if(!data.courses?.[id]) return; 
+      data.courses[id].progress = 100; store.set(data); buildDashboard();
+      toast('Certificate unlocked (demo)');
+    }
 
-    // Add your avatar upload, withdrawal, referral, and live-feed code here (unchanged)
+    // Earnings / referrals
+    function copyRef(){ $('#refLink').select(); document.execCommand('copy'); toast('Referral link copied'); }
+    function calc(){
+      const n = Math.max(0, parseInt($('#calcCount').value||0,10));
+      const amt = n * COMMISSION; $('#calcOut').textContent = '₹'+amt.toLocaleString('en-IN');
+    }
+    function requestPayout(){
+      const data = store.get(); data.earn = data.earn||{life:0,pending:0};
+      if((data.earn.pending||0)<=0){ toast('No pending earnings'); return; }
+      data.earn.life = (data.earn.life||0) + data.earn.pending; data.earn.pending = 0; store.set(data); buildDashboard(); toast('Payout processed (demo)');
+    }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      // prefill account info...
-      init();
-    });
+    // Simulate a referral if URL contains ?ref=...
+    (function handleReferral(){
+      const q = new URLSearchParams(location.search); const ref = q.get('ref');
+      if(ref){ const data = store.get(); data.earn = data.earn||{life:0,pending:0}; data.earn.pending = (data.earn.pending||0) + COMMISSION; store.set(data); }
+    })();
+
+    // Profile
+    function saveName(){ const data = store.get(); data.name = $('#nameInput').value.trim() || 'Learner'; data.public = $('#publicProfile').checked; store.set(data); buildDashboard(); toast('Saved'); }
+    function exportData(){ const blob = new Blob([JSON.stringify(store.get(), null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='skillmint-data.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(url), 500); }
+    function resetAll(){ if(confirm('Reset all local data?')){ localStorage.removeItem('skillmint:data'); location.reload(); } }
+
+    // Purchase button (demo)
+    function purchase(plan){ toast(`Selected ${plan}. You can wire this to your payment flow.`); }
+
+    // Stats update for header quick glance
+    function updateStats(){ const data = store.get(); const my = Object.keys(data.courses||{}).length; $('#statCourses')?.(my); }
+
+    // Init
+    renderCourses();
+    document.getElementById('year').textContent = new Date().getFullYear();
+    route(location.hash==='#dashboard' ? 'dashboard' : 'home');
   </script>
 </body>
 </html>
